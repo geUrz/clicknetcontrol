@@ -1,0 +1,18 @@
+.main{
+  width: 100%;
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.section{
+  padding: 150px 0;
+  width: 100%;
+  max-width: 950px;
+  height: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
