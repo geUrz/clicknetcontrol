@@ -1,7 +1,7 @@
 import { BasicLayout } from '@/layouts'
 import { useCallback, useEffect, useState } from 'react'
 import { Card } from '@/components/Home'
-import { FaBuilding, FaBullhorn, FaCarCrash, FaClipboard, FaFileAlt, FaFileContract, FaFileInvoice, FaUserCheck, FaUserCog, FaUserMd, FaUsers } from 'react-icons/fa'
+import { FaBuilding, FaBullhorn, FaCarCrash, FaClipboard, FaFileAlt, FaFileContract, FaFileInvoice, FaInfoCircle, FaUserCheck, FaUserCog, FaUserMd, FaUsers } from 'react-icons/fa'
 import ProtectedRoute from '@/components/Layouts/ProtectedRoute/ProtectedRoute'
 import axios from 'axios'
 import { size } from 'lodash'
@@ -73,7 +73,6 @@ export default function Home() {
 
   if (loading) {
     return <Loading size={45} loading={0} />
-
   }
 
   return (
@@ -89,6 +88,12 @@ export default function Home() {
                   count={false}>
                   <FaUsers />
                 </Card>
+                {user && (user.isadmin === 'Admin' || user.isadmin === 'Caseta') ?
+                  <Card link='/validarvisitas' title='Validar Visitas' count={false}>
+                    <FaUserCheck />
+                  </Card>
+                  : null
+                }
                 <Card link='/incidencias' title='Incidencias'
                   countIncidencias={countData.incidencias}>
                   <FaCarCrash />
@@ -123,13 +128,6 @@ export default function Home() {
                   : null
                 }
 
-                {user && (user.isadmin === 'Admin' || user.isadmin === 'Caseta') ?
-                  <Card link='/validarvisitas' title='Validar Visitas' count={false}>
-                    <FaUserCheck />
-                  </Card>
-                  : null
-                }
-
                 {user && (user.isadmin === 'Admin') || user.isadmin === 'Técnico' ?
                   <>
 
@@ -160,7 +158,13 @@ export default function Home() {
               </div>
 
             </> :
-            <h1>NO ACTIVO</h1>
+            
+            <div className={styles.bannerNoActive}>
+              <FaInfoCircle />
+              <h1>¡ Usuario desactivado !</h1>
+              <h2>Su cuenta presenta un atraso en el pago. Por favor, póngase en contacto con el comité para resolverlo.</h2>
+            </div>
+
           }
 
         </div>

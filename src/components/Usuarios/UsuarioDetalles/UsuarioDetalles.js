@@ -22,7 +22,7 @@ export function UsuarioDetalles(props) {
   if (usuario.isactive === 1) {
       isActive = 'Activo'
   } else {
-      isActive = 'Desactivado'
+      isActive = 'Inactivo'
   }
 
   return (

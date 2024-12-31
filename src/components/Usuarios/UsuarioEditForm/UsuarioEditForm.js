@@ -44,9 +44,9 @@ export function UsuarioEditForm(props) {
       newErrors.newIsAdmin = 'El campo es requerido'
     }
 
-    if (!formData.newIsActive) {
-      newErrors.newIsActive = 'El campo es requerido'
-    }
+    if (formData.newIsActive === undefined || formData.newIsActive === '') {
+      newErrors.newIsActive = 'El campo es requerido';
+    }    
 
     if (formData.isadmin === 'Residente') {
       if (!formData.newCalle) {
@@ -143,7 +143,7 @@ export function UsuarioEditForm(props) {
 
   const opcionesIsActive = [
     { key: 1, text: 'Activo', value: 1 },
-    { key: 2, text: 'Desactivo', value: 0 }
+    { key: 2, text: 'Inactivo', value: 0 }
   ]
 
   return (
@@ -204,7 +204,7 @@ export function UsuarioEditForm(props) {
               selection
               options={opcionesIsActive}
               value={formData.newIsActive}
-              onChange={(e, { value }) => setFormData({ ...formData, newIsActive: value })}
+              onChange={(e, { value }) => setFormData({ ...formData, newIsActive: Number(value) })}
             />
             {errors.newIsActive && <Message negative>{errors.newIsActive}</Message>}
           </FormField>

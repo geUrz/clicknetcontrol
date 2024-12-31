@@ -11,69 +11,75 @@ export function BottomMenu() {
 
     <div className={styles.main}>
       <div className={styles.section}>
-        <Link href='/' className={styles.tab}>
-          <div>
-            <FaHome />
-            <h1>Panel</h1>
-          </div>
-        </Link>
-        <Link href='/incidencias' className={styles.tab}>
-          <div>
-            <FaCarCrash />
-            <h1>Incidencias</h1>
-          </div>
-        </Link>
-        <Link href='/anuncios' className={styles.tab}>
-          <div>
-            <FaBullhorn />
-            <h1>Anuncios</h1>
-          </div>
-        </Link>
 
-        {user.isadmin === 'Admin' ? (
+        {user.isactive === 1 ?
           <>
-
-            <Link href='/visitas' className={styles.tab}>
+            <Link href='/' className={styles.tab}>
               <div>
-                <FaUsers />
-                <h1>Visitas</h1>
+                <FaHome />
+                <h1>Panel</h1>
+              </div>
+            </Link>
+            <Link href='/incidencias' className={styles.tab}>
+              <div>
+                <FaCarCrash />
+                <h1>Incidencias</h1>
+              </div>
+            </Link>
+            <Link href='/anuncios' className={styles.tab}>
+              <div>
+                <FaBullhorn />
+                <h1>Anuncios</h1>
               </div>
             </Link>
 
-            <Link href='/validarvisitas' className={styles.tab}>
-              <div>
-                <FaUserCheck />
-                <h1>Validar V.</h1>
-              </div>
-            </Link>
+            {user.isadmin === 'Admin' ? (
+              <>
 
-          </>
-        ) : (
-          user.isadmin === 'Caseta' || user.isadmin === 'Comité' ? (
-            <Link href='/validarvisitas' className={styles.tab}>
-              <div>
-                <FaUserCheck />
-                <h1>Validar V.</h1>
-              </div>
-            </Link>
-          ) : (
-            user.isadmin === 'Residente' ? (
-              <Link href='/visitas' className={styles.tab}>
-              <div>
-                <FaUsers />
-                <h1>Visitas</h1>
-              </div>
-            </Link>
-            ) : ('')
-          )
-        ) }
+                <Link href='/visitas' className={styles.tab}>
+                  <div>
+                    <FaUsers />
+                    <h1>Visitas</h1>
+                  </div>
+                </Link>
 
-        <Link href='/extras' className={styles.tab}>
-          <div>
-            <FaLayerGroup />
-            <h1>Extras</h1>
-          </div>
-        </Link>
+                <Link href='/validarvisitas' className={styles.tab}>
+                  <div>
+                    <FaUserCheck />
+                    <h1>Validar V.</h1>
+                  </div>
+                </Link>
+
+              </>
+            ) : (
+              user.isadmin === 'Caseta' || user.isadmin === 'Comité' ? (
+                <Link href='/validarvisitas' className={styles.tab}>
+                  <div>
+                    <FaUserCheck />
+                    <h1>Validar V.</h1>
+                  </div>
+                </Link>
+              ) : (
+                user.isadmin === 'Residente' ? (
+                  <Link href='/visitas' className={styles.tab}>
+                    <div>
+                      <FaUsers />
+                      <h1>Visitas</h1>
+                    </div>
+                  </Link>
+                ) : ('')
+              )
+            )}
+
+            <Link href='/extras' className={styles.tab}>
+              <div>
+                <FaLayerGroup />
+                <h1>Extras</h1>
+              </div>
+            </Link>
+          </> : null
+        }
+
       </div>
     </div>
 
