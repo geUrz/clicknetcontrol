@@ -33,6 +33,11 @@ export const formatDate = (dateString) => {
   return `${day}/${month}/${year}`;
 }
 
+export const formatDateCodigo = (dateString) => {
+  const [year, month, day] = dateString.split('-');
+  return `${year}-${month}-${day}`;
+}
+
 export const formatTime = (timeString) => {
   const [hours, minutes] = timeString.split(':');
   const date = new Date(1970, 0, 1, hours, minutes);

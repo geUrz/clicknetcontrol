@@ -149,6 +149,11 @@ export function VisitaDetalles(props) {
       return;
     }
 
+    if (!navigator.share) {
+      console.error('La API de Web Share no está soportada en este navegador');
+      return;
+    }
+
     try {
       const img = new Image();
       img.crossOrigin = 'Anonymous';
@@ -163,8 +168,8 @@ export function VisitaDetalles(props) {
         const width = qrCodeSize;
         const height = qrCodeSize + textHeight + additionalTextHeight;
 
-        canvas.width = width;
-        canvas.height = height;
+        canvas.width = qrCodeSize / 2
+        canvas.height = (qrCodeSize / 2) + (textHeight / 2) + (additionalTextHeight / 2)
 
         // Fondo blanco
         ctx.fillStyle = 'white';
