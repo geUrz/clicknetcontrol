@@ -5,7 +5,8 @@ import ProtectedRoute from '@/components/Layouts/ProtectedRoute/ProtectedRoute'
 import { Add, Loading, ToastDelete, ToastSuccess } from '@/components/Layouts'
 import { useAuth } from '@/contexts/AuthContext'
 import styles from './anuncios.module.css'
-import { AnunciosList, AnuncioForm } from '@/components/Anuncios'
+import { AnunciosList, AnuncioForm, SearchAnuncios, AnunciosListSearch } from '@/components/Anuncios'
+import { FaSearch } from 'react-icons/fa'
 
 export default function Anuncios() {
 
@@ -18,6 +19,12 @@ export default function Anuncios() {
   const [openForm, setOpenForm] = useState(false)
 
   const onOpenCloseForm = () => setOpenForm((prevState) => !prevState)
+
+  const [search, setSearch] = useState(false)
+  
+  const onOpenCloseSearch = () => setSearch((prevState) => !prevState)
+  
+  const [resultados, setResultados] = useState([])
 
   const [anuncios, setAnuncios] = useState(null)
   
@@ -34,28 +41,28 @@ export default function Anuncios() {
   }
   }, [reload, user])
 
-  const [toastSuccessAnuncio, setToastSuccessAnuncio] = useState(false)
-  const [toastSuccessAnuncioMod, setToastSuccessAnuncioMod] = useState(false)
-  const [toastSuccessAnuncioDel, setToastSuccessAnuncioDel] = useState(false)
+  const [toastSuccess, setToastSuccess] = useState(false)
+  const [toastSuccessMod, setToastSuccessMod] = useState(false)
+  const [toastSuccessDel, setToastSuccessDel] = useState(false)
 
-  const onToastSuccessAnuncio = () => {
-    setToastSuccessAnuncio(true)
+  const onToastSuccess = () => {
+    setToastSuccess(true)
     setTimeout(() => {
-      setToastSuccessAnuncio(false)
+      setToastSuccess(false)
     }, 3000)
   }
 
-  const onToastSuccessAnuncioMod = () => {
-    setToastSuccessAnuncioMod(true)
+  const onToastSuccessMod = () => {
+    setToastSuccessMod(true)
     setTimeout(() => {
-      setToastSuccessAnuncioMod(false)
+      setToastSuccessMod(false)
     }, 3000)
   }
 
-  const onToastSuccessAnuncioDel = () => {
-    setToastSuccessAnuncioDel(true)
+  const onToastSuccessDel = () => {
+    setToastSuccessDel(true)
     setTimeout(() => {
-      setToastSuccessAnuncioDel(false)
+      setToastSuccessDel(false)
     }, 3000)
   }
 
@@ -69,20 +76,42 @@ export default function Anuncios() {
 
       <BasicLayout title='anuncios' relative onReload={onReload}>
 
-        {toastSuccessAnuncio && <ToastSuccess contain='Creado exitosamente' onClose={() => setToastSuccessAnuncio(false)} />}
+        {toastSuccess && <ToastSuccess contain='Creado exitosamente' onClose={() => setToastSuccess(false)} />}
 
-        {toastSuccessAnuncioMod && <ToastSuccess contain='Modificado exitosamente' onClose={() => setToastSuccessAnuncioMod(false)} />}
+        {toastSuccessMod && <ToastSuccess contain='Modificado exitosamente' onClose={() => setToastSuccessMod(false)} />}
 
-        {toastSuccessAnuncioDel && <ToastDelete contain='Eliminado exitosamente' onClose={() => setToastSuccessAnuncioDel(false)} />}
+        {toastSuccessDel && <ToastDelete contain='Eliminado exitosamente' onClose={() => setToastSuccessDel(false)} />}
 
-        <AnunciosList reload={reload} onReload={onReload} anuncios={anuncios} onToastSuccessAnuncioMod={onToastSuccessAnuncioMod} onToastSuccessAnuncioDel={onToastSuccessAnuncioDel} />
+        {!search ? (
+        ''
+      ) : (
+        <div className={styles.searchMain}>
+          <SearchAnuncios onResults={setResultados} reload={reload} onReload={onReload} onToastSuccessMod={onToastSuccessMod} onOpenCloseSearch={onOpenCloseSearch} />
+          {resultados.length > 0 && (
+            <AnunciosListSearch visitas={resultados} reload={reload} onReload={onReload} />
+          )}
+        </div>
+      )}
+
+      {!search ? (
+        <div className={styles.iconSearchMain}>
+          <div className={styles.iconSearch} onClick={onOpenCloseSearch}>
+            <h1>Buscar anuncio</h1>
+            <FaSearch />
+          </div>
+        </div>
+      ) : (
+        ''
+      )}
+
+        <AnunciosList reload={reload} onReload={onReload} anuncios={anuncios} onToastSuccessMod={onToastSuccessMod} onToastSuccessDel={onToastSuccessDel} />
 
         <Add onOpenClose={onOpenCloseForm} />
 
       </BasicLayout>
 
       <BasicModal title='crear anuncio' show={openForm} onClose={onOpenCloseForm}>
-        <AnuncioForm reload={reload} onReload={onReload} onOpenCloseForm={onOpenCloseForm} onToastSuccessAnuncio={onToastSuccessAnuncio} />
+        <AnuncioForm reload={reload} onReload={onReload} onOpenCloseForm={onOpenCloseForm} onToastSuccess={onToastSuccess} />
       </BasicModal>
 
     </ProtectedRoute>

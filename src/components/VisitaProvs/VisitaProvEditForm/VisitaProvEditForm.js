@@ -7,7 +7,7 @@ import { useAuth } from '@/contexts/AuthContext'
 
 export function VisitaProvEditForm(props) {
 
-  const { reload, onReload, visitaprov, onOpenEditVisitaprov, onToastSuccessVisitaprovMod } = props
+  const { reload, onReload, visitaprov, onOpenEditVisitaprov, onToastSuccessMod } = props
 
   const {user} = useAuth()
 
@@ -58,7 +58,7 @@ export function VisitaProvEditForm(props) {
       await axios.put(`/api/visitaprovedores/visitaprovedores?id=${visitaprov.id}`, formData)
       onReload()
       onOpenEditVisitaprov()
-      onToastSuccessVisitaprovMod()
+      onToastSuccessMod()
     } catch (error) {
       console.error('Error actualizando la visita provedor:', error)
     }

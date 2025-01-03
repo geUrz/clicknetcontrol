@@ -7,7 +7,7 @@ import styles from './OrdenServicioPDF.module.css'
 
 export function OrdenServicioPDF(props) {
 
-  const { ordenservicio, user, firmaCli, firmaTec, visitatecnica, image, toggle } = props
+  const { ordenservicio, firmaCli, firmaTec, visitatecnica, image, toggle } = props
 
   const generarPDF = async () => {
 
@@ -17,7 +17,7 @@ export function OrdenServicioPDF(props) {
       {
         orientation: 'p',
         unit: 'mm',
-        format: 'a5'
+        format: 'a4'
       }
     )
 
@@ -25,78 +25,79 @@ export function OrdenServicioPDF(props) {
       const text = 'www.clicknetmx.com'
       const textWidth = doc.getTextWidth(text)
       const x = (pageWidth - textWidth) / 2
-      const y = doc.internal.pageSize.height - 5 // Posición a 10 mm del borde inferior
+      const y = doc.internal.pageSize.height - 5 
       doc.setFontSize(8)
       doc.setTextColor(120, 120, 120)
       doc.text(text, x, y)
     }
 
     const logoImg = 'img/logo.png'
-    const logoWidth = 50
-    const logoHeight = 14
-    const marginMain = 4
-    const marginRightLogo = marginMain
+    const logoWidth = 58
+    const logoHeight = 16
+    const marginRightLogo = 12
 
     const pageWidth = doc.internal.pageSize.getWidth()
 
     const xPosition = pageWidth - logoWidth - marginRightLogo
 
-    doc.addImage(logoImg, 'PNG', xPosition, 12.5, logoWidth, logoHeight)
+    doc.addImage(logoImg, 'PNG', xPosition, 18, logoWidth, logoHeight)
 
     doc.setFont('helvetica')
 
-    const font1 = 9.5
-    const font2 = 8.5
-    const font3 = 8
+    const marginMain = 12
+    const marginRight = 12
+    const font1 = 12
+    const font2 = 10
+    const font3 = 9
 
-    doc.setFontSize(`${font1}`)
+    doc.setFontSize(`${font2}`)
     doc.setTextColor(0, 0, 0)
-    doc.text('CLICKNETMX', marginMain, 16)
+    doc.text('CLICKNET', 15, 23)
     doc.setFontSize(`${font2}`)
     doc.setTextColor(120, 120, 120)
-    doc.text('Punta Este Corporativo', marginMain, 20)
-    doc.text('Calzada Carranza 951,', marginMain, 24)
-    doc.text('Piso 10 Suite 304, Interior "E"', marginMain, 28)
-    doc.text('C.P. 2125', marginMain, 32)
+    doc.text('Punta Este Corporativo', 15, 27)
+    doc.text('Calzada Carranza 951', 15, 31)
+    doc.text('Piso 10 Suite 304, Interior "E"', 15, 35)
+    doc.text('C.P. 2125', 15, 39)
+    doc.setFontSize(`${font3}`)
+    doc.setTextColor(0, 0, 0)
+    doc.text('Juan Roberto Espinoza Espinoza', 15, 43)
+    doc.setFontSize(`${font3}`)
+    doc.setTextColor(120, 120, 120)
+    doc.text('RFC: EIEJ8906244J3', 15, 47)
+
     doc.setFontSize(`${font2}`)
     doc.setTextColor(0, 0, 0)
-    doc.text('Juan Roberto Espinoza Espinoza', marginMain, 36)
+    doc.text('Cliente', 15, 60)
     doc.setFontSize(`${font2}`)
     doc.setTextColor(120, 120, 120)
-    doc.text('RFC: EIEJ8906244J3', marginMain, 40)
+    doc.text(`${ordenservicio.residencial_nombre}`, 15, 64)
 
     doc.setFontSize(`${font1}`)
-    doc.setTextColor(0, 0, 0)
-    doc.text('Cliente', marginMain, 48)
-    doc.setFontSize(`${font2}`)
-    doc.setTextColor(120, 120, 120)
-    doc.text(`${user.nombre_residencial}`, marginMain, 52)
-
-    doc.setFontSize(`${font1}`)
-    doc.setTextColor(0, 0, 0)
     doc.setFont("helvetica", "bold")
-    doc.text('ÓRDEN DE SERVICIO', doc.internal.pageSize.width - marginMain - doc.getTextWidth('ÓRDEN DE SERVICIO'), 34)
-    doc.setFontSize(`${font1}`)
     doc.setTextColor(0, 0, 0)
+    doc.text('ORDEN DE SERVICIO', doc.internal.pageSize.width - marginRight - doc.getTextWidth('ORDEN DE SERVICIO'), 44)
+    doc.setFontSize(`${font2}`)
     doc.setFont("helvetica", "normal")
-    doc.text('Folio', doc.internal.pageSize.width - marginMain - doc.getTextWidth('Folio'), 40)
+    doc.setTextColor(0, 0, 0)
+    doc.text('Folio', doc.internal.pageSize.width - marginRight - doc.getTextWidth('Folio'), 50)
     doc.setFontSize(`${font2}`)
     doc.setTextColor(120, 120, 120)
-    doc.text(`${ordenservicio.folio}`, doc.internal.pageSize.width - marginMain - doc.getTextWidth(`${ordenservicio.folio}`), 43.5)
+    doc.text(`${ordenservicio.folio}`, doc.internal.pageSize.width - marginRight - doc.getTextWidth(`${ordenservicio.folio}`), 54)
 
-    doc.setFontSize(`${font1}`)
+    doc.setFontSize(`${font2}`)
     doc.setTextColor(0, 0, 0)
-    doc.text('Fecha', doc.internal.pageSize.width - marginMain - doc.getTextWidth('Fecha'), 49)
+    doc.text('Fecha', doc.internal.pageSize.width - marginRight - doc.getTextWidth('Fecha'), 60)
     doc.setFontSize(`${font2}`)
     doc.setTextColor(120, 120, 120)
     doc.text(
-      `${formatDate(ordenservicio.date).toUpperCase()}`,
-      doc.internal.pageSize.width - marginMain - doc.getTextWidth(`${formatDate(ordenservicio.date)}`),
-      52.5
+      `${formatDate(ordenservicio.date)}`,
+      doc.internal.pageSize.width - 12 - doc.getTextWidth(`${formatDate(ordenservicio.date)}`),
+      64
     )
 
     doc.autoTable({
-      startY: 58,
+      startY: 75,
       head: [
         [
           { content: 'Descripción', styles: { halign: 'left' } }
@@ -107,8 +108,8 @@ export function OrdenServicioPDF(props) {
         cellWidth: 'auto',
       },
       body: [[ordenservicio.descripcion || 'Sin descripción']],
-      headStyles: { fillColor: [240, 240, 240], fontSize: `${font1}`, textColor: [50, 50, 50] },
-      bodyStyles: { fontSize: `${font2}` },
+      headStyles: { fillColor: [240, 240, 240], fontSize: `${font2}`, textColor: [50, 50, 50] },
+      bodyStyles: { fontSize: `${font3}` },
       alternateRowStyles: { fillColor: [255, 255, 255] },
       columnStyles: {
         cellWidth: 100,
@@ -120,8 +121,8 @@ export function OrdenServicioPDF(props) {
 
     })
 
-    const top = 154
-    const boxWidth = 143.5
+    const top = 230
+    const boxWidth = 185
     const boxHeight = 30
 
     doc.setDrawColor(255, 255, 255)
@@ -129,16 +130,15 @@ export function OrdenServicioPDF(props) {
 
     doc.setFontSize(`${font2}`)
     doc.setTextColor(0, 0, 0);
-    doc.text('Nota:', marginMain, top + 0)
+    doc.text('Nota:', marginMain, top - 1)
 
-    doc.setFontSize(`${font2}`)
-    doc.setTextColor(120, 120, 120)
+    doc.setFontSize(`${font3}`)
+    doc.setTextColor(80, 80, 80)
     const content = ordenservicio.nota === undefined || ordenservicio.nota === null ? (
       ''
     ) : (
       `${ordenservicio.nota}`
     )
-
 
     const textX = marginMain
     const textY = top + 4
@@ -146,72 +146,59 @@ export function OrdenServicioPDF(props) {
 
     doc.text(content, textX, textY, { maxWidth: txtWidth })
 
-    const pWidth = doc.internal.pageSize.getWidth()
-    const mRight = marginMain
-    const tableWidth = 33
-    const marginLeft = pWidth - mRight - tableWidth
-
     const firmaWidth = 24
     const firmaHeight = 12
-    const marginRightFirma = 20
-
-    const firmaWidthCli = 24
-    const firmaHeightCli = 12
-    const marginRightFirmaCli = 70
-
-    const pgWidth = doc.internal.pageSize.getWidth()
-    const pgWidthCli = doc.internal.pageSize.getWidth()
-
-    const xPos = pgWidth - firmaWidth - marginRightFirma
-    const xPosCli = pgWidthCli - firmaWidthCli - marginRightFirmaCli
+    const marginRightFirmaTec = 40
+    const marginRightFirmaCli = 110
+    const xPos = pageWidth - firmaWidth - marginRightFirmaTec
+    const xPosCli = pageWidth - firmaWidth - marginRightFirmaCli
 
     if (firmaTec) {
-      doc.addImage(firmaTec, 'PNG', xPos, 174, firmaWidth, firmaHeight)
+      doc.addImage(firmaTec, 'PNG', xPos, 264, firmaWidth, firmaHeight)
     }
     doc.setFontSize(`${font3}`)
     doc.setTextColor(50, 50, 50)
-    doc.text('_________________________', doc.internal.pageSize.width - 35 - doc.getTextWidth('Firma Técnico'), 188)
-    doc.text('Firma Técnico', doc.internal.pageSize.width - 23.5 - doc.getTextWidth('Firma Técnico'), 192.5)
-
+    doc.text('_________________________', doc.internal.pageSize.width - 55 - doc.getTextWidth('Firma Técnico'), 278)
+    doc.text('Firma Técnico', doc.internal.pageSize.width - 43.5 - doc.getTextWidth('Firma Técnico'), 282.5)
 
     if (firmaCli) {
-      doc.addImage(firmaCli, 'PNG', xPosCli, 174, firmaWidthCli, firmaHeightCli)
+      doc.addImage(firmaCli, 'PNG', xPosCli, 264, firmaWidth, firmaHeight)
     }
     doc.setFontSize(`${font3}`)
     doc.setTextColor(50, 50, 50)
-    doc.text('_________________________', doc.internal.pageSize.width - 85 - doc.getTextWidth('Firma Cliente'), 188)
-    doc.text('Firma Cliente', doc.internal.pageSize.width - 72 - doc.getTextWidth('Firma Cliente'), 192.5)
-
+    doc.text('_________________________', doc.internal.pageSize.width - 125 - doc.getTextWidth('Firma Cliente'), 278)
+    doc.text('Firma Cliente', doc.internal.pageSize.width - 112 - doc.getTextWidth('Firma Cliente'), 282.5)
 
     const qrCodeText = 'https://www.facebook.com/clicknet.mx'
     const qrCodeDataUrl = await QRCode.toDataURL(qrCodeText)
-    doc.addImage(qrCodeDataUrl, 'PNG', 2, 170, 35, 35)
+    doc.addImage(qrCodeDataUrl, 'PNG', 10, 248, 40, 40)
 
-    doc.setFontSize(`${font3}`);
+    doc.setFontSize(`${font3}`)
     doc.setTextColor(120, 120, 120)
 
     addFooterText()
 
     if (toggle) {
 
-      const imgWidth = 25;
-      const imgHeight = 45;
-      const spaceBetweenImages = 35; // Espacio horizontal entre las imágenes
+      const imgWidth = 40
+      const imgHeight = 60
+      const spaceBetweenImages = 45
       const imagesPerRow = 4;
 
-      // Función para calcular el punto de inicio en X para centrar las imágenes
       function calculateInitialPosX(docWidth) {
-        const totalImagesWidth = imagesPerRow * imgWidth + (imagesPerRow - 1) * (spaceBetweenImages - imgWidth);
-        return (docWidth - totalImagesWidth) / 2;
+        const totalImagesWidth = imagesPerRow * imgWidth + (imagesPerRow - 1) * (spaceBetweenImages - imgWidth)
+        return (docWidth - totalImagesWidth) / 2
       }
 
       doc.addPage();
       doc.autoTable({
         startY: 10,
         head: [[{ content: 'Evidencias Antes del Servicio', styles: { halign: 'left' } }]],
-        headStyles: { fillColor: [240, 240, 240], fontSize: font1, textColor: [50, 50, 50] },
+        headStyles: { fillColor: [240, 240, 240], fontSize: font2, textColor: [50, 50, 50] },
         margin: { top: 0, left: marginMain, right: marginMain },
-      });
+      })
+
+      addFooterText()
 
       const imgAntes = [
         { img: visitatecnica.img1, title: visitatecnica.title1 },
@@ -226,39 +213,36 @@ export function OrdenServicioPDF(props) {
         { img: visitatecnica.img10, title: visitatecnica.title10 }
       ]
 
-      let firstRowTopMargin = 18; // Margen superior personalizado para la primera fila
-      let posY = firstRowTopMargin; // Aplicar el margen para la primera fila
+      let firstRowTopMargin = 28
+      let posY = firstRowTopMargin
       let posX = calculateInitialPosX(doc.internal.pageSize.width)
 
       imgAntes.forEach((item, index) => {
         if (item.img) {
-          doc.addImage(item.img, 'PNG', posX, posY, imgWidth, imgHeight);
+          doc.addImage(item.img, 'PNG', posX, posY, imgWidth, imgHeight)
 
           if (item.title) {
-            doc.setFontSize(font2);
-            doc.setTextColor(0, 0, 0);
-            doc.text(item.title, posX + imgWidth / 2, posY + imgHeight + 5, { maxWidth: imgWidth, align: 'center' });
+            doc.setFontSize(font2)
+            doc.setTextColor(0, 0, 0)
+            doc.text(item.title, posX + imgWidth / 2, posY + imgHeight + 5, { maxWidth: imgWidth, align: 'center' })
           }
         }
 
-        posX += spaceBetweenImages;
+        posX += spaceBetweenImages
 
         if ((index + 1) % imagesPerRow === 0) {
-          posX = calculateInitialPosX(doc.internal.pageSize.width); // Centrado de nuevo en la siguiente fila
-          posY += 62; // Espacio entre filas de imágenes
+          posX = calculateInitialPosX(doc.internal.pageSize.width)
+          posY += 80
         }
       })
 
-      addFooterText()
-
-      // Sección de imágenes "Después"
-      doc.addPage();
+      doc.addPage()
       doc.autoTable({
         startY: 10,
         head: [[{ content: 'Evidencias Después del Servicio', styles: { halign: 'left' } }]],
-        headStyles: { fillColor: [240, 240, 240], fontSize: font1, textColor: [50, 50, 50] },
+        headStyles: { fillColor: [240, 240, 240], fontSize: font2, textColor: [50, 50, 50] },
         margin: { top: 0, left: marginMain, right: marginMain },
-      });
+      })
 
       const imgDespues = [
         { img: visitatecnica.img11, title: visitatecnica.title11 },
@@ -273,32 +257,33 @@ export function OrdenServicioPDF(props) {
         { img: visitatecnica.img20, title: visitatecnica.title20 }
       ]
 
-      posY = firstRowTopMargin; // Utilizar el mismo margen superior
-      posX = calculateInitialPosX(doc.internal.pageSize.width); // Centrado en X
+      posY = firstRowTopMargin
+      posX = calculateInitialPosX(doc.internal.pageSize.width) 
 
       addFooterText()
 
       imgDespues.forEach((item, index) => {
         if (item.img) {
-          doc.addImage(item.img, 'PNG', posX, posY, imgWidth, imgHeight);
+          doc.addImage(item.img, 'PNG', posX, posY, imgWidth, imgHeight)
 
           if (item.title) {
-            doc.setFontSize(font2);
-            doc.setTextColor(0, 0, 0);
-            doc.text(item.title, posX + imgWidth / 2, posY + imgHeight + 5, { maxWidth: imgWidth, align: 'center' });
+            doc.setFontSize(font2)
+            doc.setTextColor(0, 0, 0)
+            doc.text(item.title, posX + imgWidth / 2, posY + imgHeight + 5, { maxWidth: imgWidth, align: 'center' })
           }
         }
 
         posX += spaceBetweenImages;
 
         if ((index + 1) % imagesPerRow === 0) {
-          posX = calculateInitialPosX(doc.internal.pageSize.width); // Centrado de nuevo en la siguiente fila
-          posY += 62; // Espacio entre filas de imágenes
+          posX = calculateInitialPosX(doc.internal.pageSize.width)
+          posY += 80
         }
       })
+
     }
 
-    doc.save(`${ordenservicio.folio}.pdf`)
+    doc.save(`ordenservicio_${ordenservicio.folio}.pdf`)
 
   }
 

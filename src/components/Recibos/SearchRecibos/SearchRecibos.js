@@ -28,8 +28,9 @@ export function SearchRecibos(props) {
       setError('')
 
       try {
-        const response = await axios.get(`/api/recibos/recibos?search=${query}&residencial_id=${user.residencial_id}`)
-        setRecibos(response.data)
+        const res = await axios.get(`/api/recibos/recibos?search=${query}`)
+        const filteredRecibos = res.data.filter(recibo => recibo.residencial_id === user.residencial_id)
+        setRecibos(filteredRecibos)
       } catch (err) {
         setError('No se encontraron recibos')
         setRecibos([])

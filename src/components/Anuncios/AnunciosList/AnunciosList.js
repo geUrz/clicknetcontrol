@@ -5,15 +5,13 @@ import { BasicModal } from '@/layouts'
 import { AnuncioDetalles } from '../AnuncioDetalles'
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
-import { Form, FormField, FormGroup, Label } from 'semantic-ui-react'
-import { convertTo12HourFormat, formatDate, formatDateInc } from '@/helpers'
-import DatePicker from 'react-datepicker'
+import { convertTo12HourFormat, formatDate } from '@/helpers'
 import 'react-datepicker/dist/react-datepicker.css'
 import styles from './AnunciosList.module.css'
 
 export function AnunciosList(props) {
 
-  const { reload, onReload, anuncios, onToastSuccessAnuncioMod, onToastSuccessAnuncioDel } = props
+  const { reload, onReload, anuncios, onToastSuccessMod, onToastSuccessDel } = props
 
   const { loading } = useAuth()
 
@@ -31,14 +29,6 @@ export function AnunciosList(props) {
     setShowDetalles(false)
   }
 
-  const [filterFecha, setFilterFecha] = useState(null)
-
-  const filteredanuncios = (anuncios || []).filter((anuncio) => {
-    return (
-      (filterFecha === null || anuncio.date === formatDateInc(filterFecha))
-    )
-  })
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowLoading(false)
@@ -55,37 +45,14 @@ export function AnunciosList(props) {
 
     <>
 
-      <div className={styles.filters}>
-
-        <h1>Buscar por:</h1>
-
-        <Form>
-          <FormGroup>
-            <Label className={styles.label}>Fecha</Label>
-            <FormField>
-              <DatePicker
-                selected={filterFecha}
-                onChange={(date) => setFilterFecha(date)}
-                dateFormat="dd/MM/yyyy"
-                placeholderText="dd/mm/aaaa"
-                locale="es"
-                isClearable
-                showPopperArrow={false}
-                popperPlacement="bottom"
-              />
-            </FormField>
-          </FormGroup>
-        </Form>
-      </div>
-
       {showLoading ? (
         <Loading size={45} loading={1} />
       ) : (
-        size(filteredanuncios) === 0 ? (
+        size(anuncios) === 0 ? (
           <ListEmpty />
         ) : (
           <div className={styles.main}>
-            {map(filteredanuncios, (anuncio) => (
+            {map(anuncios, (anuncio) => (
               <div key={anuncio.id} className={styles.section} onClick={() => onOpenDetalles(anuncio)}>
                 <div>
                   <div className={styles.column1}>
@@ -118,9 +85,9 @@ export function AnunciosList(props) {
             reload={reload}
             onReload={onReload}
             anuncio={anuncioseleccionada}
-            onOpenCloseDetalles={onCloseDetalles}
-            onToastSuccessAnuncioMod={onToastSuccessAnuncioMod}
-            onToastSuccessAnuncioDel={onToastSuccessAnuncioDel}
+            onCloseDetalles={onCloseDetalles}
+            onToastSuccessMod={onToastSuccessMod}
+            onToastSuccessDel={onToastSuccessDel}
           />
         )}
       </BasicModal>

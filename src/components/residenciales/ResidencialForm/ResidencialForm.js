@@ -15,7 +15,7 @@ export function ResidencialForm(props) {
   const [nombre, setNombre] = useState('')
   const [direccion, setDireccion] = useState('')
 
-  const { reload, onReload, onOpenCloseForm, onToastSuccessResidencial } = props
+  const { reload, onReload, onOpenCloseForm, onToastSuccess } = props
 
   const [errors, setErrors] = useState({})
 
@@ -64,7 +64,7 @@ export function ResidencialForm(props) {
 
       onReload()
       onOpenCloseForm()
-      onToastSuccessResidencial()
+      onToastSuccess()
 
     } catch (error) {
       console.error('Error al crear el residencial:', error)

@@ -13,7 +13,7 @@ import { BiSolidToggleLeft, BiSolidToggleRight } from 'react-icons/bi'
 
 export function ReporteDetalles(props) {
 
-  const { reload, onReload, reporte: initialReporte, onOpenCloseDetalles, onToastSuccessMod, onToastSuccessDel } = props;
+  const { reload, onReload, reporte: initialReporte, onCloseDetalles, onToastSuccessMod, onToastSuccessDel } = props;
 
   const { user } = useAuth()
 
@@ -117,7 +117,7 @@ export function ReporteDetalles(props) {
         setReporte(null)
         onReload()
         onToastSuccessDel()
-        onOpenCloseDetalles()
+        onCloseDetalles()
       } catch (error) {
         console.error('Error al eliminar el reporte:', error)
       }
@@ -371,7 +371,7 @@ export function ReporteDetalles(props) {
 
   return (
     <>
-      <IconClose onOpenClose={onOpenCloseDetalles} />
+      <IconClose onOpenClose={onCloseDetalles} />
 
       <div className={styles.section}>
         <div className={styles.box1}>

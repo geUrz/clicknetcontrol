@@ -11,7 +11,7 @@ import styles from './OrdenServicioForm.module.css'
 
 export function OrdenServicioForm(props) {
   const { user } = useAuth()
-  const { reload, onReload, onOpenCloseForm, onToastSuccessOrdenservicio } = props
+  const { reload, onReload, onOpenCloseForm, onToastSuccess } = props
 
   const [nombre, setNombre] = useState('')
   const [descripcion, setDescripcion] = useState('')
@@ -104,7 +104,7 @@ export function OrdenServicioForm(props) {
 
       onReload()
       onOpenCloseForm()
-      onToastSuccessOrdenservicio()
+      onToastSuccess()
     } catch (error) {
       console.error('Error al crear la órden de servicio:', error)
     }

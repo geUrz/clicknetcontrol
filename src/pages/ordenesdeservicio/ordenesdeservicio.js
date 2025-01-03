@@ -4,8 +4,10 @@ import { useAuth } from '@/contexts/AuthContext'
 import { useEffect, useState } from 'react'
 import { Add, Loading, ToastDelete, ToastSuccess } from '@/components/Layouts'
 import axios from 'axios'
-import { OrdenServicioForm, OrdenServicioList } from '@/components/OrdenServicio'
+import { OrdenServicioForm, OrdenServicioList, OrdenServicioListSearch, SearchOrdenServicio } from '@/components/OrdenServicio'
 import styles from './ordenesdeservicio.module.css'
+import { FaSearch } from 'react-icons/fa'
+import { ResidencialesListSearch } from '@/components/residenciales'
 
 export default function Ordenesdeservicio() {
 
@@ -18,6 +20,12 @@ export default function Ordenesdeservicio() {
   const [openForm, setOpenForm] = useState(false)
 
   const onOpenCloseForm = () => setOpenForm((prevState) => !prevState)
+
+  const [search, setSearch] = useState(false)
+  
+  const onOpenCloseSearch = () => setSearch((prevState) => !prevState)
+  
+  const [resultados, setResultados] = useState([])
 
   const [ordenservicio, setOrdenservicio] = useState(null)
   
@@ -34,28 +42,28 @@ export default function Ordenesdeservicio() {
     }
   }, [reload, user])
 
-  const [toastSuccessOrdenservicio, setToastSuccessOrdenservicio] = useState(false)
-  const [toastSuccessOrdenservicioMod, setToastSuccessOrdenservicioMod] = useState(false)
-  const [toastSuccessOrdenservicioDel, setToastSuccessOrdenservicioDel] = useState(false)
+  const [toastSuccess, setToastSuccess] = useState(false)
+  const [toastSuccessMod, setToastSuccessMod] = useState(false)
+  const [toastSuccessDel, setToastSuccessDel] = useState(false)
 
-  const onToastSuccessOrdenservicio = () => {
-    setToastSuccessOrdenservicio(true)
+  const onToastSuccess = () => {
+    setToastSuccess(true)
     setTimeout(() => {
-      setToastSuccessOrdenservicio(false)
+      setToastSuccess(false)
     }, 3000)
   }
 
-  const onToastSuccessOrdenservicioMod = () => {
-    setToastSuccessOrdenservicioMod(true)
+  const onToastSuccessMod = () => {
+    setToastSuccessMod(true)
     setTimeout(() => {
-      setToastSuccessOrdenservicioMod(false)
+      setToastSuccessMod(false)
     }, 3000)
   }
 
-  const onToastSuccessOrdenservicioDel = () => {
-    setToastSuccessOrdenservicioDel(true)
+  const onToastSuccessDel = () => {
+    setToastSuccessDel(true)
     setTimeout(() => {
-      setToastSuccessOrdenservicioDel(false)
+      setToastSuccessDel(false)
     }, 3000)
   }
 
@@ -69,20 +77,42 @@ export default function Ordenesdeservicio() {
 
       <BasicLayout title='Órdenes de servicio' relative onReload={onReload}>
 
-        {toastSuccessOrdenservicio && <ToastSuccess contain='Creada exitosamente' onClose={() => setToastSuccessOrdenservicio(false)} />}
+        {toastSuccess && <ToastSuccess contain='Creada exitosamente' onClose={() => setToastSuccess(false)} />}
 
-        {toastSuccessOrdenservicioMod && <ToastSuccess contain='Modificada exitosamente' onClose={() => setToastSuccessOrdenservicioMod(false)} />}
+        {toastSuccessMod && <ToastSuccess contain='Modificada exitosamente' onClose={() => setToastSuccessMod(false)} />}
 
-        {toastSuccessOrdenservicioDel && <ToastDelete contain='Eliminada exitosamente' onClose={() => setToastSuccessOrdenservicioDel(false)} />}
+        {toastSuccessDel && <ToastDelete contain='Eliminada exitosamente' onClose={() => setToastSuccessDel(false)} />}
 
-        <OrdenServicioList reload={reload} onReload={onReload} ordenservicio={ordenservicio} onToastSuccessOrdenservicioMod={onToastSuccessOrdenservicioMod} onToastSuccessOrdenservicioDel={onToastSuccessOrdenservicioDel} />
+        {!search ? (
+        ''
+      ) : (
+        <div className={styles.searchMain}>
+          <SearchOrdenServicio onResults={setResultados} reload={reload} onReload={onReload} onToastSuccessMod={onToastSuccessMod} onOpenCloseSearch={onOpenCloseSearch} />
+          {resultados.length > 0 && (
+            <OrdenServicioListSearch visitas={resultados} reload={reload} onReload={onReload} />
+          )}
+        </div>
+      )}
+
+      {!search ? (
+        <div className={styles.iconSearchMain}>
+          <div className={styles.iconSearch} onClick={onOpenCloseSearch}>
+            <h1>Buscar orden de servicio</h1>
+            <FaSearch />
+          </div>
+        </div>
+      ) : (
+        ''
+      )}
+
+        <OrdenServicioList reload={reload} onReload={onReload} ordenservicio={ordenservicio} onToastSuccessMod={onToastSuccessMod} onToastSuccessDel={onToastSuccessDel} />
 
         <Add onOpenClose={onOpenCloseForm} />
 
       </BasicLayout>
 
       <BasicModal title='crear órden de servicio' show={openForm} onClose={onOpenCloseForm}>
-        <OrdenServicioForm reload={reload} onReload={onReload} onOpenCloseForm={onOpenCloseForm} onToastSuccessOrdenservicio={onToastSuccessOrdenservicio} />
+        <OrdenServicioForm reload={reload} onReload={onReload} onOpenCloseForm={onOpenCloseForm} onToastSuccess={onToastSuccess} />
       </BasicModal>
 
     </ProtectedRoute>

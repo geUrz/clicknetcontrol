@@ -8,7 +8,7 @@ import { genIncId } from '@/helpers'
 
 export function IncidenciaForm(props) {
 
-  const { reload, onReload, onOpenCloseForm, onToastSuccessIncidencia } = props
+  const { reload, onReload, onOpenCloseForm, onToastSuccess } = props
   
   const { user } = useAuth()
   
@@ -72,7 +72,7 @@ export function IncidenciaForm(props) {
 
       onReload()
       onOpenCloseForm()
-      onToastSuccessIncidencia()
+      onToastSuccess()
 
     } catch (error) {
       console.error('Error al crear el incidencia:', error)

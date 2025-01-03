@@ -1,18 +1,18 @@
-import { IconClose, Confirm, FirmaDigital, Loading } from '@/components/Layouts'
+import { IconClose, Confirm, FirmaDigital } from '@/components/Layouts'
 import { formatDate } from '@/helpers'
 import { BasicModal, ModalImg } from '@/layouts'
-import { FaCheck, FaEdit, FaImage, FaPlus, FaTimes, FaTrash } from 'react-icons/fa'
+import { FaCheck, FaEdit, FaPlus, FaTimes, FaTrash } from 'react-icons/fa'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Button, Form, FormField, FormGroup, Image, Label, Tab, TextArea } from 'semantic-ui-react'
 import { useAuth } from '@/contexts/AuthContext'
-import styles from './OrdenServicioDetalles.module.css'
 import { OrdenServicioEditForm } from '../OrdenServicioEditForm'
 import { OrdenServicioPDF } from '../OrdenServicioPDF'
 import { BiSolidToggleLeft, BiSolidToggleRight } from 'react-icons/bi'
+import styles from './OrdenServicioDetalles.module.css'
 
 export function OrdenServicioDetalles(props) {
-  const { reload, onReload, ordenservicio, onOpenCloseDetalles, onToastSuccessOrdenservicioMod, onToastSuccessOrdenservicioDel } = props
+  const { reload, onReload, ordenservicio, onCloseDetalles, onToastSuccessMod, onToastSuccessDel } = props
 
   const { user } = useAuth()
 
@@ -31,7 +31,7 @@ export function OrdenServicioDetalles(props) {
   const [showConfirmFirmaCli, setShowConfirmFirmaCli] = useState(false)
 
   const [toggle, setToggle] = useState(false)
-  const onToggle = () => setToggle((prevState) => !prevState)
+  const onToggle = () => setToggle((prevState) => !prevState) 
 
   const openImg = (imgUrl) => {
     setSelectedImg(imgUrl)
@@ -108,13 +108,13 @@ export function OrdenServicioDetalles(props) {
       try {
         await axios.delete(`/api/ordenservicio/ordenservicio?id=${ordenservicio.id}`)
         onReload()
-        onToastSuccessOrdenservicioDel()
-        onOpenCloseDetalles()
+        onToastSuccessDel()
+        onCloseDetalles()
       } catch (error) {
-        console.error('Error al eliminar la órden de servicio:', error)
+        console.error('Error al eliminar la orden de servicio:', error)
       }
     } else {
-      console.error('Órden de servicio o ID no disponible')
+      console.error('Orden de servicio o ID no disponible')
     }
   }
 
@@ -128,7 +128,7 @@ export function OrdenServicioDetalles(props) {
         const res = await axios.get(`/api/visitatecnica/visitatecnica?id=${ordenservicio.visitatecnica_id}`)
         setVisitatecnica(res.data)
       } catch (error) {
-        console.error('Error al obtener la visita técnica:', error)
+        console.error('Error al obtener la orden de servicio:', error)
       }
     }
 
@@ -276,13 +276,13 @@ export function OrdenServicioDetalles(props) {
 
   return (
     <>
-      <IconClose onOpenClose={onOpenCloseDetalles} />
+      <IconClose onOpenClose={onCloseDetalles} />
 
       <div className={styles.section}>
         <div className={styles.box1}>
           <div className={styles.box1_1}>
             <div>
-              <h1>Órden de servicio</h1>
+              <h1>Orden de servicio</h1>
               <h2>{ordenservicio.nombre}</h2>
             </div>
             <div>
@@ -399,7 +399,7 @@ export function OrdenServicioDetalles(props) {
           onReload={onReload}
           ordenservicio={ordenservicio}
           onOpenEditOrdenservicio={onOpenEditOrdenservicio}
-          onToastSuccessOrdenservicioMod={onToastSuccessOrdenservicioMod}
+          onToastSuccessMod={onToastSuccessMod}
         />
       </BasicModal>
 

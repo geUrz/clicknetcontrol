@@ -5,7 +5,7 @@ import { LoadingMini } from '@/components/Layouts'
 
 export function Card(props) {
 
-  const {children, title, link, count=true, countIncidencias, countAnuncios, countVisitatecnica, countReportes, countVisitaprovedores, countResidenciales, countUsuarios, countOrdenesdeservicio, countRecibos, countCotizaciones } = props
+  const {children, title, link, count=true, countIncidencias, countAnuncios, countVisitatecnica, countReportes, countVisitaprovedores, countResidenciales, countUsuarios, countResidentes, countOrdenesdeservicio, countRecibos, countCotizaciones } = props
 
   const [showLoading, setShowLoading] = useState(true)
 
@@ -17,6 +17,7 @@ export function Card(props) {
     '/visitaprovedores': countVisitaprovedores,
     '/residenciales': countResidenciales,
     '/usuarios': countUsuarios,
+    '/residentes': countResidentes,
     '/ordenesdeservicio': countOrdenesdeservicio,
     '/recibos': countRecibos,
     '/cotizaciones': countCotizaciones

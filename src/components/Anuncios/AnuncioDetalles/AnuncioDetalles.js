@@ -9,7 +9,7 @@ import styles from './AnuncioDetalles.module.css';
 import { useAuth } from '@/contexts/AuthContext';
 
 export function AnuncioDetalles(props) {
-  const { reload, onReload, anuncio, onOpenCloseDetalles, onToastSuccessAnuncioMod, onToastSuccessAnuncioDel } = props
+  const { reload, onReload, anuncio, onCloseDetalles, onToastSuccessMod, onToastSuccessDel } = props
   
   const { user } = useAuth()
 
@@ -26,8 +26,8 @@ export function AnuncioDetalles(props) {
       try {
         await axios.delete(`/api/anuncios/anuncios?id=${anuncio.id}`)
         onReload()
-        onToastSuccessAnuncioDel()
-        onOpenCloseDetalles()
+        onToastSuccessDel()
+        onCloseDetalles()
       } catch (error) {
         console.error('Error al eliminar el anuncio:', error)
       }
@@ -38,7 +38,7 @@ export function AnuncioDetalles(props) {
 
   return (
     <>
-      <IconClose onOpenClose={onOpenCloseDetalles} />
+      <IconClose onOpenClose={onCloseDetalles} />
 
       <div className={styles.section}>
         <div className={styles.box1}>
@@ -94,7 +94,7 @@ export function AnuncioDetalles(props) {
       </div>
 
       <BasicModal title='Editar anuncio' show={showEditAnuncio} onClose={onOpenEditAnuncio}>
-        <AnuncioEditForm reload={reload} onReload={onReload} anuncio={anuncio} onOpenEditAnuncio={onOpenEditAnuncio} onToastSuccessAnuncioMod={onToastSuccessAnuncioMod} />
+        <AnuncioEditForm reload={reload} onReload={onReload} anuncio={anuncio} onOpenEditAnuncio={onOpenEditAnuncio} onToastSuccessMod={onToastSuccessMod} />
       </BasicModal>
 
       <Confirm

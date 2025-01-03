@@ -17,7 +17,7 @@ export function AnuncioForm(props) {
   const [date, setDate] = useState(null)
   const [hora, setHora] = useState('')
 
-  const { reload, onReload, onOpenCloseForm, onToastSuccessAnuncio } = props
+  const { reload, onReload, onOpenCloseForm, onToastSuccess } = props
 
   const [errors, setErrors] = useState({})
 
@@ -80,7 +80,7 @@ export function AnuncioForm(props) {
 
       onReload()
       onOpenCloseForm()
-      onToastSuccessAnuncio()
+      onToastSuccess()
 
     } catch (error) {
       console.error('Error al crear el anuncio:', error)

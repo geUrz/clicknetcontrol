@@ -60,7 +60,7 @@ async function sendNotificationToAdmins(header, message, url) {
 }
 
 export default async function handler(req, res) {
-  const { id, residencial_id } = req.query
+  const { id, residencial_id, search } = req.query
 
   if (req.method === 'GET') {
 
@@ -77,6 +77,7 @@ export default async function handler(req, res) {
             ordenservicio.descripcion,
             ordenservicio.date,
             ordenservicio.residencial_id,
+            residenciales.nombre AS residencial_nombre,
             ordenservicio.nota,
             ordenservicio.firmaTec,
             ordenservicio.firmaCli,
@@ -85,6 +86,7 @@ export default async function handler(req, res) {
             ordenservicio.createdAt
           FROM ordenservicio
           JOIN usuarios ON ordenservicio.usuario_id = usuarios.id 
+          JOIN residenciales ON ordenservicio.residencial_id = residenciales.id
           WHERE ordenservicio.residencial_id = ? 
           ORDER BY ordenservicio.updatedAt DESC`, [residencial_id]);
         
@@ -98,6 +100,51 @@ export default async function handler(req, res) {
         res.status(500).json({ error: error.message })
       }
       return;
+    }
+
+    if (search) {
+      const searchQuery = `%${search.toLowerCase()}%`; // Convertimos la búsqueda a minúsculas
+      try {
+        const [rows] = await connection.query(
+          `SELECT 
+              ordenservicio.id,
+              ordenservicio.usuario_id,
+              ordenservicio.folio,
+              usuarios.nombre AS usuario_nombre,
+              usuarios.isadmin AS usuario_isadmin,
+              ordenservicio.nombre,
+              ordenservicio.descripcion,
+              ordenservicio.date,
+              ordenservicio.nota,
+              ordenservicio.residencial_id,
+              ordenservicio.firmaTec,
+              ordenservicio.firmaCli,
+              ordenservicio.visitatecnica_id,
+              residenciales.nombre AS residencial_nombre,
+              ordenservicio.folioref,
+              ordenservicio.createdAt
+              FROM ordenservicio
+              JOIN usuarios ON ordenservicio.usuario_id = usuarios.id
+              JOIN residenciales ON ordenservicio.residencial_id = residenciales.id
+          WHERE 
+            LOWER(ordenservicio.folio) LIKE ? 
+            OR LOWER(ordenservicio.nombre) LIKE ? 
+            OR LOWER(ordenservicio.descripcion) LIKE ?
+            OR LOWER(ordenservicio.nota) LIKE ?
+            OR LOWER(ordenservicio.date) LIKE ?
+            ORDER BY ordenservicio.updatedAt DESC`,
+          [searchQuery, searchQuery, searchQuery, searchQuery, searchQuery]
+        )
+
+        /* if (rows.length === 0) {
+          return res.status(404).json({ message: 'No se encontraron reportes' })
+        } */
+
+        res.status(200).json(rows)
+      } catch (error) {
+        res.status(500).json({ error: 'Error al realizar la búsqueda' })
+      }
+      return
     }
 
     // Caso para obtener todos las órdenes de servicio

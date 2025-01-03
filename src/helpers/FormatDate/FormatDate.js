@@ -62,8 +62,9 @@ export const convertTo12HourFormat = (time24h) => {
   let [hours, minutes] = time24h.split(':');
   const modifier = +hours >= 12 ? 'PM' : 'AM';
   hours = +hours % 12 || 12; // Ajustar las horas en formato 12 horas
-  return `${String(hours).padStart(2, '0')}:${minutes} ${modifier}`;
+  return `${hours}:${minutes} ${modifier}`;
 }
+
 
 export function formatDateVT(dateString) {
   const date = new Date(dateString);

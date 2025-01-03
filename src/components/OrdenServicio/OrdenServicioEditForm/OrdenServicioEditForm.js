@@ -8,7 +8,7 @@ import styles from './OrdenServicioEditForm.module.css'
 
 export function OrdenServicioEditForm(props) {
 
-  const { reload, onReload, ordenservicio, onOpenEditOrdenservicio, onToastSuccessOrdenservicioMod } = props
+  const { reload, onReload, ordenservicio, onOpenEditOrdenservicio, onToastSuccessMod } = props
 
   const [formData, setFormData] = useState({
     nombre: ordenservicio.nombre,
@@ -69,7 +69,7 @@ export function OrdenServicioEditForm(props) {
       })
       onReload()
       onOpenEditOrdenservicio()
-      onToastSuccessOrdenservicioMod()
+      onToastSuccessMod()
     } catch (error) {
       console.error('Error actualizando la órden de servicio:', error)
     }

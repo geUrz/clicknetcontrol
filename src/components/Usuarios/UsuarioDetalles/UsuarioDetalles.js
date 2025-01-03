@@ -68,7 +68,7 @@ export function UsuarioDetalles(props) {
             </div>
             <div>
               <h1>Residencial</h1>
-              <h2>{usuario.nombre_residencial}</h2>
+              <h2>{usuario.residencial_nombre}</h2>
             </div>
             {usuario.isadmin === 'Residente' ?
               <>

@@ -9,7 +9,7 @@ import styles from './ResidencialDetalles.module.css';
 
 export function ResidencialDetalles(props) {
 
-  const { reload, onReload, residencial, onOpenCloseDetalles, onToastSuccessResidencialMod } = props
+  const { reload, onReload, residencial, onCloseDetalles, onToastSuccessMod } = props
 
   const { user } = useAuth()
 
@@ -18,7 +18,7 @@ export function ResidencialDetalles(props) {
 
   return (
     <>
-      <IconClose onOpenClose={onOpenCloseDetalles} />
+      <IconClose onOpenClose={onCloseDetalles} />
 
       <div className={styles.section}>
         <div className={styles.box1}>
@@ -58,7 +58,7 @@ export function ResidencialDetalles(props) {
       </div>
 
       <BasicModal title='modificar el residencial' show={showEditResidencial} onClose={onOpenEditResidencial}>
-        <ResidencialEditForm reload={reload} onReload={onReload} residencial={residencial} onOpenEditResidencial={onOpenEditResidencial} onToastSuccessResidencialMod={onToastSuccessResidencialMod} />
+        <ResidencialEditForm reload={reload} onReload={onReload} residencial={residencial} onOpenEditResidencial={onOpenEditResidencial} onToastSuccessMod={onToastSuccessMod} />
       </BasicModal>
 
     </>

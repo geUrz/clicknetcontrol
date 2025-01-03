@@ -63,19 +63,26 @@ export default async function handler(req, res) {
             try {
                 const [rows] = await connection.query(`
                     SELECT
-                        id,
-                        usuario_id,
-                        folio,
-                        recibo,
-                        nota,
-                        residencial_id,
-                        createdAt
+                        recibos.id, 
+                        recibos.usuario_id, 
+                        recibos.folio, 
+                        recibos.recibo,
+                        recibos.nota, 
+                        recibos.residencial_id, 
+                        residenciales.nombre AS residencial_nombre, 
+                        recibos.updatedAt,  
+                        recibos.createdAt
                     FROM recibos
+                    JOIN residenciales ON recibos.residencial_id = residenciales.id
                     WHERE 
-                        LOWER(folio) LIKE ?  
+                        LOWER(recibos.folio) LIKE ?  
                     OR 
-                        LOWER(nota) LIKE ?  
-                    ORDER BY recibos.updatedAt DESC`, [searchQuery, searchQuery]);
+                        LOWER(recibos.recibo) LIKE ?
+                    OR 
+                        LOWER(recibos.nota) LIKE ?
+                    OR 
+                        LOWER(recibos.createdAt) LIKE ?  
+                    ORDER BY recibos.updatedAt DESC`, [searchQuery, searchQuery, searchQuery, searchQuery]);
 
                 res.status(200).json(rows); // Devolver los recibos encontrados por búsqueda
 

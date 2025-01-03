@@ -53,11 +53,51 @@ async function sendNotificationToResidentialUsers(residencial_id, header, messag
 }
 
 export default async function handler(req, res) {
-    const { id, residencial_id, usuario_id } = req.query
+    const { id, search, residencial_id, usuario_id } = req.query
 
     if (req.method === 'GET') {
 
-        // Caso para obtener visitaprovedores por usuario_id
+        if (search) {
+            const searchQuery = `%${search.toLowerCase()}%`;
+            try {
+                const [rows] = await connection.query(`
+                    SELECT
+                        visitaprovedores.id,
+                        visitaprovedores.usuario_id,
+                        usuarios.nombre AS usuario_nombre,
+                        usuarios.usuario AS usuario_usuario,
+                        visitaprovedores.folio,
+                        visitaprovedores.visitaprovedor,
+                        visitaprovedores.descripcion,
+                        visitaprovedores.estado,
+                        visitaprovedores.residencial_id,
+                        autorizo_usuario.usuario AS autorizo_usuario,
+                        visitaprovedores.createdAt
+                    FROM visitaprovedores
+                    JOIN usuarios ON visitaprovedores.usuario_id = usuarios.id
+                    LEFT JOIN usuarios AS autorizo_usuario ON visitaprovedores.autorizo = autorizo_usuario.id
+                    WHERE 
+                        LOWER(visitaprovedores.folio) LIKE ?  
+                    OR 
+                        LOWER(visitaprovedores.visitaprovedor) LIKE ?
+                    OR 
+                        LOWER(visitaprovedores.descripcion) LIKE ?
+                    OR 
+                        LOWER(visitaprovedores.estado) LIKE ?
+                    OR 
+                        LOWER(autorizo_usuario.usuario) LIKE ?
+                    OR 
+                        LOWER(visitaprovedores.createdAt) LIKE ?  
+                    ORDER BY visitaprovedores.updatedAt DESC`, [searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, searchQuery]);
+
+                res.status(200).json(rows); // Devolver los recibos encontrados por búsqueda
+
+            } catch (error) {
+                res.status(500).json({ error: 'Error al realizar la búsqueda' });
+            }
+            return;
+        }
+
         if (residencial_id) {
             try {
                 const [rows] = await connection.query(

@@ -1,12 +1,12 @@
 import { BasicLayout, BasicModal } from '@/layouts'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import { IncidenciasList } from '@/components/Incidencias'
+import { IncidenciasList, IncidenciaForm, SearchIncidencia } from '@/components/Incidencias'
 import ProtectedRoute from '@/components/Layouts/ProtectedRoute/ProtectedRoute'
 import { Add, Loading, ToastDelete, ToastSuccess } from '@/components/Layouts'
-import { IncidenciaForm } from '@/components/Incidencias/IncidenciaForm'
 import { useAuth } from '@/contexts/AuthContext'
 import styles from './incidencias.module.css'
+import { FaSearch } from 'react-icons/fa'
 
 export default function Incidencias() {
 
@@ -14,11 +14,17 @@ export default function Incidencias() {
   
   const [reload, setReload] = useState(false)
 
-  const onReload = () => setReload((prevState) => prevState)
+  const onReload = () => setReload((prevState) => !prevState)
 
   const [openForm, setOpenForm] = useState(false)
 
   const onOpenCloseForm = () => setOpenForm((prevState) => !prevState)
+
+  const [search, setSearch] = useState(false)
+  
+  const onOpenCloseSearch = () => setSearch((prevState) => !prevState)
+  
+  const [resultados, setResultados] = useState([])
 
   const [incidencias, setIncidencias] = useState(null)
   
@@ -35,28 +41,28 @@ export default function Incidencias() {
     }
   }, [reload, user])
 
-  const [toastSuccessIncidencia, setToastSuccessIncidencia] = useState(false)
-  const [toastSuccessIncidenciaMod, setToastSuccessIncidenciaMod] = useState(false)
-  const [toastSuccessIncidenciaDel, setToastSuccessIncidenciaDel] = useState(false)
+  const [toastSuccess, setToastSuccess] = useState(false)
+  const [toastSuccessMod, setToastSuccessMod] = useState(false)
+  const [toastSuccessDel, setToastSuccessDel] = useState(false)
 
-  const onToastSuccessIncidencia = () => {
-    setToastSuccessIncidencia(true)
+  const onToastSuccess = () => {
+    setToastSuccess(true)
     setTimeout(() => {
-      setToastSuccessIncidencia(false)
+      setToastSuccess(false)
     }, 3000)
   }
 
-  const onToastSuccessIncidenciaMod = () => {
-    setToastSuccessIncidenciaMod(true)
+  const onToastSuccessMod = () => {
+    setToastSuccessMod(true)
     setTimeout(() => {
-      setToastSuccessIncidenciaMod(false)
+      setToastSuccessMod(false)
     }, 3000)
   }
 
-  const onToastSuccessIncidenciaDel = () => {
-    setToastSuccessIncidenciaDel(true)
+  const onToastSuccessDel = () => {
+    setToastSuccessDel(true)
     setTimeout(() => {
-      setToastSuccessIncidenciaDel(false)
+      setToastSuccessDel(false)
     }, 3000)
   }
 
@@ -70,20 +76,42 @@ export default function Incidencias() {
 
       <BasicLayout title='incidencias' relative onReload={onReload}>
 
-        {toastSuccessIncidencia && <ToastSuccess contain='Creada exitosamente' onClose={() => setToastSuccessIncidencia(false)} />}
+        {toastSuccess && <ToastSuccess contain='Creada exitosamente' onClose={() => setToastSuccess(false)} />}
 
-        {toastSuccessIncidenciaMod && <ToastSuccess contain='Modificada exitosamente' onClose={() => setToastSuccessIncidenciaMod(false)} />}
+        {toastSuccessMod && <ToastSuccess contain='Modificada exitosamente' onClose={() => setToastSuccessMod(false)} />}
 
-        {toastSuccessIncidenciaDel && <ToastDelete contain='Eliminada exitosamente' onClose={() => setToastSuccessIncidenciaDel(false)} />}
+        {toastSuccessDel && <ToastDelete contain='Eliminada exitosamente' onClose={() => setToastSuccessDel(false)} />}
 
-        <IncidenciasList reload={reload} onReload={onReload} incidencias={incidencias} onToastSuccessIncidenciaMod={onToastSuccessIncidenciaMod} onToastSuccessIncidenciaDel={onToastSuccessIncidenciaDel} />
+        {!search ? (
+        ''
+      ) : (
+        <div className={styles.searchMain}>
+          <SearchIncidencia onResults={setResultados} reload={reload} onReload={onReload} onToastSuccessMod={onToastSuccessMod} onOpenCloseSearch={onOpenCloseSearch} />
+          {resultados.length > 0 && (
+            <ReportesListSearch visitas={resultados} reload={reload} onReload={onReload} />
+          )}
+        </div>
+      )}
+
+      {!search ? (
+        <div className={styles.iconSearchMain}>
+          <div className={styles.iconSearch} onClick={onOpenCloseSearch}>
+            <h1>Buscar incidencia</h1>
+            <FaSearch />
+          </div>
+        </div>
+      ) : (
+        ''
+      )}
+
+        <IncidenciasList reload={reload} onReload={onReload} incidencias={incidencias} onToastSuccessMod={onToastSuccessMod} onToastSuccessDel={onToastSuccessDel} />
 
         <Add onOpenClose={onOpenCloseForm} />
 
       </BasicLayout>
 
       <BasicModal title='crear incidencia' show={openForm} onClose={onOpenCloseForm}>
-        <IncidenciaForm reload={reload} onReload={onReload} onOpenCloseForm={onOpenCloseForm} onToastSuccessIncidencia={onToastSuccessIncidencia} />
+        <IncidenciaForm reload={reload} onReload={onReload} onOpenCloseForm={onOpenCloseForm} onToastSuccess={onToastSuccess} />
       </BasicModal>
 
     </ProtectedRoute>

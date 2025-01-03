@@ -75,25 +75,29 @@ export default async function handler(req, res) {
           }
 
           if (search) {
-            const searchQuery = `%${search.toLowerCase()}%`;
+            const searchQuery = `%${search.toLowerCase()}%`
             try {
                 const [rows] = await connection.query(
-                    `SELECT
-                    id,
-                    usuario_id,
-                    folio,
-                    cotizacion,
-                    nota,
-                    residencial_id,
-                    createdAt
+                `SELECT
+                    cotizaciones.id, 
+                    cotizaciones.usuario_id, 
+                    cotizaciones.folio,  
+                    cotizaciones.cotizacion,  
+                    cotizaciones.nota, 
+                    cotizaciones.residencial_id,
+                    residenciales.nombre AS residencial_nombre, 
+                    cotizaciones.updatedAt, 
+                    cotizaciones.createdAt 
                 FROM cotizaciones
+                JOIN residenciales ON cotizaciones.residencial_id = residenciales.id
                 WHERE 
-                    LOWER(folio) LIKE ?  
-                OR 
-                    LOWER(cotizacion) LIKE ? 
-                OR 
-                    LOWER(nota) LIKE ?  
-                ORDER BY updatedAt DESC`, [searchQuery, searchQuery, searchQuery])
+                LOWER(cotizaciones.folio) LIKE ?  
+                OR LOWER(cotizaciones.cotizacion) LIKE ? 
+                OR LOWER(cotizaciones.nota) LIKE ?
+                OR LOWER(cotizaciones.createdAt) LIKE ?  
+                ORDER BY cotizaciones.updatedAt DESC`, 
+                [searchQuery, searchQuery, searchQuery, searchQuery]
+            )
                   
       
               /* if (rows.length === 0) {
@@ -117,7 +121,7 @@ export default async function handler(req, res) {
                         cotizaciones.cotizacion,  
                         cotizaciones.nota, 
                         cotizaciones.residencial_id,
-                        residenciales.nombre AS residenciales_nombre,
+                        residenciales.nombre AS residencial_nombre,
                         cotizaciones.updatedAt,  
                         cotizaciones.createdAt  
                     FROM 

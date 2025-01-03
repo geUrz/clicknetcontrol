@@ -55,6 +55,7 @@
 
 .box1_1 h1, .box1_1 h2{
   text-align: left;
+  white-space: pre-line;
 }
 
 .box1_2{

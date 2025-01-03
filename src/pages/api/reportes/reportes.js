@@ -63,17 +63,78 @@ export default async function handler(req, res) {
       const searchQuery = `%${search.toLowerCase()}%`; // Convertimos la búsqueda a minúsculas
       try {
         const [rows] = await connection.query(
-          `SELECT id, usuario_id, folio, reporte, descripcion, date, estado, img1, img2, img3, img4, img5, img6 
-                    FROM reportes 
-                    WHERE LOWER(reporte) LIKE ? 
-                    OR LOWER(folio) LIKE ? 
-                    OR LOWER(descripcion) LIKE ?`,
-          [searchQuery, searchQuery, searchQuery]
+          `SELECT 
+              reportes.id, 
+              reportes.usuario_id, 
+              usuarios.nombre AS usuario_nombre,
+              usuarios.isadmin AS usuario_isadmin,
+              reportes.folio, 
+              reportes.reporte, 
+              reportes.descripcion, 
+              reportes.date, 
+              reportes.page2, 
+              reportes.nota, 
+              reportes.estado, 
+              reportes.title1, 
+              reportes.title2, 
+              reportes.title3, 
+              reportes.title4, 
+              reportes.title5, 
+              reportes.title6, 
+              reportes.title7, 
+              reportes.title8, 
+              reportes.title9, 
+              reportes.title10, 
+              reportes.title11, 
+              reportes.title12, 
+              reportes.title13, 
+              reportes.title14, 
+              reportes.title15, 
+              reportes.title16, 
+              reportes.title17, 
+              reportes.title18, 
+              reportes.title19, 
+              reportes.title20, 
+              reportes.img1, 
+              reportes.img2, 
+              reportes.img3, 
+              reportes.img4, 
+              reportes.img5, 
+              reportes.img6, 
+              reportes.img7, 
+              reportes.img8, 
+              reportes.img9, 
+              reportes.img10, 
+              reportes.img11, 
+              reportes.img12, 
+              reportes.img13, 
+              reportes.img14, 
+              reportes.img15, 
+              reportes.img16, 
+              reportes.img17, 
+              reportes.img18, 
+              reportes.img19, 
+              reportes.img20, 
+              reportes.firmaTec,
+              reportes.firmaCli,
+              reportes.residencial_id,
+              residenciales.nombre AS residencial_nombre
+              FROM reportes 
+              JOIN usuarios ON reportes.usuario_id = usuarios.id
+              JOIN residenciales ON reportes.residencial_id = residenciales.id
+          WHERE 
+            LOWER(reportes.reporte) LIKE ? 
+            OR LOWER(reportes.folio) LIKE ? 
+            OR LOWER(reportes.descripcion) LIKE ?
+            OR LOWER(reportes.nota) LIKE ?
+            OR LOWER(reportes.date) LIKE ?
+            ORDER BY reportes.updatedAt DESC`,
+          [searchQuery, searchQuery, searchQuery, searchQuery, searchQuery]
         )
 
-        if (rows.length === 0) {
+        /* if (rows.length === 0) {
           return res.status(404).json({ message: 'No se encontraron reportes' })
-        }
+        } */
 
         res.status(200).json(rows)
       } catch (error) {

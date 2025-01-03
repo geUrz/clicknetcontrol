@@ -54,23 +54,51 @@ async function sendNotificationToResidentialUsers(residencial_id, header, messag
 }
 
 export default async function handler(req, res) {
-    const { id, residencial_id, usuario_id, search } = req.query; // 'deleteImage' eliminado
+    const { id, residencial_id, usuario_id, search } = req.query
 
     if (req.method === 'GET') {
-        // Caso para búsqueda de incidencias
+
         if (search) {
             const searchQuery = `%${search.toLowerCase()}%`;
             try {
                 const [rows] = await connection.query(
-                    `SELECT id, usuario_id, folio, incidencia, descripcion, zona, estado 
+                    `SELECT
+                        id, 
+                        usuario_id, 
+                        folio, 
+                        incidencia, 
+                        descripcion, 
+                        zona, 
+                        estado, 
+                        title1, 
+                        title2, 
+                        title3, 
+                        title4, 
+                        img1, 
+                        img2, 
+                        img3, 
+                        img4, 
+                        residencial_id, 
+                        createdAt
                     FROM incidencias 
-                    WHERE LOWER(incidencia) LIKE ? OR LOWER(folio) LIKE ? OR LOWER(zona) LIKE ? OR LOWER(estado) LIKE ?`,
-                    [searchQuery, searchQuery, searchQuery, searchQuery]
+                    WHERE 
+                    LOWER(folio) LIKE ? 
+                    OR 
+                    LOWER(incidencia) LIKE ?
+                    OR 
+                    LOWER(descripcion) LIKE ? 
+                    OR 
+                    LOWER(zona) LIKE ? 
+                    OR 
+                    LOWER(estado) LIKE ?
+                    OR 
+                    LOWER(createdAt) LIKE ?`,
+                    [searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, searchQuery]
                 );
 
                 if (rows.length === 0) {
                     return res.status(404).json({ message: 'No se encontraron incidencias' });
-                }
+                } 
 
                 res.status(200).json(rows);
             } catch (error) {
@@ -83,7 +111,28 @@ export default async function handler(req, res) {
         if (residencial_id) {
             try {
                 const [rows] = await connection.query(
-                    'SELECT id, usuario_id, folio, incidencia, descripcion, zona, estado, title1, title2, title3, title4, img1, img2, img3, img4, residencial_id, createdAt FROM incidencias WHERE residencial_id = ? ORDER BY updatedAt DESC',
+                    `SELECT 
+                        id, 
+                        usuario_id, 
+                        folio, 
+                        incidencia, 
+                        descripcion, 
+                        zona, 
+                        estado, 
+                        title1, 
+                        title2, 
+                        title3, 
+                        title4, 
+                        img1, 
+                        img2, 
+                        img3, 
+                        img4, 
+                        residencial_id, 
+                        createdAt 
+                    FROM incidencias 
+                    WHERE 
+                        residencial_id = ? 
+                    ORDER BY updatedAt DESC`,
                     [residencial_id]
                 )
                 /* if (rows.length === 0) {
@@ -99,12 +148,29 @@ export default async function handler(req, res) {
         // Caso para obtener todas las incidencias
         try {
             const [rows] = await connection.query(
-                `SELECT incidencias.id, incidencias.usuario_id, usuarios.nombre AS usuario_nombre,
-                 usuarios.usuario AS usuario_usuario, usuarios.privada AS usuario_privada,
-                 usuarios.calle AS usuario_calle, usuarios.casa AS usuario_casa,
-                 incidencias.folio, incidencias.incidencia, incidencias.descripcion,
-                 incidencias.zona, incidencias.estado, incidencias.title1, incidencias.title2, incidencias.title3, incidencias.title4, incidencias.img1,
-                 incidencias.img2, incidencias.img3, incidencias.img4, incidencias.residencial_id, incidencias.createdAt
+                `SELECT 
+                    incidencias.id, 
+                    incidencias.usuario_id, 
+                    usuarios.nombre AS usuario_nombre,
+                    usuarios.usuario AS usuario_usuario, 
+                    usuarios.privada AS usuario_privada,
+                    usuarios.calle AS usuario_calle, 
+                    usuarios.casa AS usuario_casa,
+                    incidencias.folio, 
+                    incidencias.incidencia, 
+                    incidencias.descripcion,
+                    incidencias.zona, 
+                    incidencias.estado, 
+                    incidencias.title1, 
+                    incidencias.title2, 
+                    incidencias.title3, 
+                    incidencias.title4, 
+                    incidencias.img1,
+                    incidencias.img2, 
+                    incidencias.img3, 
+                    incidencias.img4, 
+                    incidencias.residencial_id, 
+                    incidencias.createdAt
                  FROM incidencias
                  JOIN usuarios ON incidencias.usuario_id = usuarios.id
                  ORDER BY incidencias.updatedAt DESC`

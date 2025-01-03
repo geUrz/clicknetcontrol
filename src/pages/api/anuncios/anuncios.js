@@ -62,17 +62,32 @@ export default async function handler(req, res) {
       const searchQuery = `%${search.toLowerCase()}%`; // Convertimos la búsqueda a minúsculas
       try {
         const [rows] = await connection.query(
-          `SELECT id, usuario_id, folio, anuncio, descripcion, date, hora 
-                    FROM anuncios 
-                    WHERE LOWER(anuncio) LIKE ? 
-                    OR LOWER(folio) LIKE ? 
-                    OR LOWER(descripcion) LIKE ?`,
-          [searchQuery, searchQuery, searchQuery]
+          `SELECT 
+            id, 
+            usuario_id, 
+            folio, 
+            anuncio, 
+            descripcion, 
+            date, 
+            hora,
+            residencial_id 
+          FROM anuncios 
+          WHERE 
+            LOWER(anuncio) LIKE ? 
+          OR 
+            LOWER(folio) LIKE ? 
+          OR 
+            LOWER(descripcion) LIKE ?
+          OR 
+            LOWER(date) LIKE ?
+          OR 
+            LOWER(hora) LIKE ?`,
+          [searchQuery, searchQuery, searchQuery, searchQuery, searchQuery]
         )
 
-        if (rows.length === 0) {
+        /* if (rows.length === 0) {
           return res.status(404).json({ message: 'No se encontraron anuncios' });
-        }
+        } */
 
         res.status(200).json(rows);
       } catch (error) {

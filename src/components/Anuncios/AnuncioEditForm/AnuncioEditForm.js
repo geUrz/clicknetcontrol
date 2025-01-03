@@ -9,7 +9,7 @@ import styles from './AnuncioEditForm.module.css'
 
 export function AnuncioEditForm(props) {
 
-  const { reload, onReload, anuncio, onOpenEditAnuncio, onToastSuccessAnuncioMod } = props
+  const { reload, onReload, anuncio, onOpenEditAnuncio, onToastSuccessMod } = props
 
   const { user } = useAuth()
 
@@ -68,7 +68,7 @@ export function AnuncioEditForm(props) {
       })
       onReload()
       onOpenEditAnuncio()
-      onToastSuccessAnuncioMod()
+      onToastSuccessMod()
     } catch (error) {
       console.error('Error actualizando el anuncio:', error)
     }

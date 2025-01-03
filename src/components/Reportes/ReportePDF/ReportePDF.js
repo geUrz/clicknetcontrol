@@ -17,7 +17,6 @@ export function ReportePDF(props) {
       format: 'a4'
     })
 
-    // Función para agregar el texto en el pie de página
     const addFooterText = () => {
       const text = 'www.clicknetmx.com'
       const textWidth = doc.getTextWidth(text)
@@ -207,18 +206,17 @@ export function ReportePDF(props) {
 
     if (toggleEvi) {
 
-      const imgWidth = 40;
-      const imgHeight = 60;
-      const spaceBetweenImages = 45; // Espacio horizontal entre las imágenes
+      const imgWidth = 40
+      const imgHeight = 60
+      const spaceBetweenImages = 45
       const imagesPerRow = 4;
 
-      // Función para calcular el punto de inicio en X para centrar las imágenes
       function calculateInitialPosX(docWidth) {
-        const totalImagesWidth = imagesPerRow * imgWidth + (imagesPerRow - 1) * (spaceBetweenImages - imgWidth);
-        return (docWidth - totalImagesWidth) / 2;
+        const totalImagesWidth = imagesPerRow * imgWidth + (imagesPerRow - 1) * (spaceBetweenImages - imgWidth)
+        return (docWidth - totalImagesWidth) / 2
       }
 
-      doc.addPage();
+      doc.addPage()
       doc.autoTable({
         startY: 10,
         head: [[{ content: 'Evidencias Antes del Servicio', styles: { halign: 'left' } }]],
@@ -241,36 +239,36 @@ export function ReportePDF(props) {
         { img: reporte.img10, title: reporte.title10 }
       ]
 
-      let firstRowTopMargin = 28; // Margen superior personalizado para la primera fila
-      let posY = firstRowTopMargin; // Aplicar el margen para la primera fila
+      let firstRowTopMargin = 28
+      let posY = firstRowTopMargin
       let posX = calculateInitialPosX(doc.internal.pageSize.width)
 
       imgAntes.forEach((item, index) => {
         if (item.img) {
-          doc.addImage(item.img, 'PNG', posX, posY, imgWidth, imgHeight);
+          doc.addImage(item.img, 'PNG', posX, posY, imgWidth, imgHeight)
 
           if (item.title) {
-            doc.setFontSize(font2);
-            doc.setTextColor(0, 0, 0);
-            doc.text(item.title, posX + imgWidth / 2, posY + imgHeight + 5, { maxWidth: imgWidth, align: 'center' });
+            doc.setFontSize(font2)
+            doc.setTextColor(0, 0, 0)
+            doc.text(item.title, posX + imgWidth / 2, posY + imgHeight + 5, { maxWidth: imgWidth, align: 'center' })
           }
         }
 
-        posX += spaceBetweenImages;
+        posX += spaceBetweenImages
 
         if ((index + 1) % imagesPerRow === 0) {
-          posX = calculateInitialPosX(doc.internal.pageSize.width); // Centrado de nuevo en la siguiente fila
-          posY += 80; // Espacio entre filas de imágenes
+          posX = calculateInitialPosX(doc.internal.pageSize.width)
+          posY += 80
         }
       })
 
-      doc.addPage();
+      doc.addPage()
       doc.autoTable({
         startY: 10,
         head: [[{ content: 'Evidencias Después del Servicio', styles: { halign: 'left' } }]],
         headStyles: { fillColor: [240, 240, 240], fontSize: font2, textColor: [50, 50, 50] },
         margin: { top: 0, left: marginMain, right: marginMain },
-      });
+      })
 
       const imgDespues = [
         { img: reporte.img11, title: reporte.title11 },
@@ -285,27 +283,27 @@ export function ReportePDF(props) {
         { img: reporte.img20, title: reporte.title20 }
       ]
 
-      posY = firstRowTopMargin; // Utilizar el mismo margen superior
-      posX = calculateInitialPosX(doc.internal.pageSize.width); // Centrado en X
+      posY = firstRowTopMargin
+      posX = calculateInitialPosX(doc.internal.pageSize.width) 
 
       addFooterText()
 
       imgDespues.forEach((item, index) => {
         if (item.img) {
-          doc.addImage(item.img, 'PNG', posX, posY, imgWidth, imgHeight);
+          doc.addImage(item.img, 'PNG', posX, posY, imgWidth, imgHeight)
 
           if (item.title) {
-            doc.setFontSize(font2);
-            doc.setTextColor(0, 0, 0);
-            doc.text(item.title, posX + imgWidth / 2, posY + imgHeight + 5, { maxWidth: imgWidth, align: 'center' });
+            doc.setFontSize(font2)
+            doc.setTextColor(0, 0, 0)
+            doc.text(item.title, posX + imgWidth / 2, posY + imgHeight + 5, { maxWidth: imgWidth, align: 'center' })
           }
         }
 
         posX += spaceBetweenImages;
 
         if ((index + 1) % imagesPerRow === 0) {
-          posX = calculateInitialPosX(doc.internal.pageSize.width); // Centrado de nuevo en la siguiente fila
-          posY += 80; // Espacio entre filas de imágenes
+          posX = calculateInitialPosX(doc.internal.pageSize.width)
+          posY += 80
         }
       })
 

@@ -31,7 +31,7 @@ export default function Usuarios() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await axios.get('/api/usuarios/usuarios')
+        const res = await axios.get('/api/usuarios/usuarios?isadmin=Admin, Técnico')
         setUsuarios(res.data)
       } catch (error) {
         console.error(error)

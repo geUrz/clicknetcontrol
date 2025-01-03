@@ -13,9 +13,6 @@ export function UsuarioEditForm(props) {
     newResidencial: usuario.residencial_id || '',
     newIsAdmin: usuario.isadmin || '',
     newIsActive: usuario.isactive ? 1 : 0,
-    newPrivada: usuario.privada || '',
-    newCalle: usuario.calle || '',
-    newCasa: usuario.casa || '',
     newEmail: usuario.email || '',
     newPassword: '',
     confirmPassword: ''
@@ -47,15 +44,6 @@ export function UsuarioEditForm(props) {
     if (formData.newIsActive === undefined || formData.newIsActive === '') {
       newErrors.newIsActive = 'El campo es requerido';
     }    
-
-    if (formData.isadmin === 'Residente') {
-      if (!formData.newCalle) {
-        newErrors.newCalle = 'El campo es requerido'
-      }
-      if (!formData.newCasa) {
-        newErrors.newCasa = 'El campo es requerido'
-      }
-    }
 
     if (!formData.newEmail) {
       newErrors.newEmail = 'El campo es requerido'
@@ -90,9 +78,6 @@ export function UsuarioEditForm(props) {
       await axios.put(`/api/usuarios/usuarios?id=${usuario.id}`, {
         nombre: formData.newNombre,
         usuario: formData.newUsuario,
-        privada: formData.newPrivada,
-        calle: formData.newCalle,
-        casa: formData.newCasa,
         email: formData.newEmail,
         isadmin: formData.newIsAdmin,
         isactive: formData.newIsActive,
@@ -135,10 +120,7 @@ export function UsuarioEditForm(props) {
 
   const opcionesNivel = [
     { key: 1, text: 'Admin', value: 'Admin' },
-    { key: 2, text: 'Caseta', value: 'Caseta' },
-    { key: 3, text: 'Comité', value: 'Comité' },
-    { key: 4, text: 'Residente', value: 'Residente' },
-    { key: 5, text: 'Técnico', value: 'Técnico' }
+    { key: 2, text: 'Técnico', value: 'Tecnico' }
   ]
 
   const opcionesIsActive = [
@@ -208,41 +190,6 @@ export function UsuarioEditForm(props) {
             />
             {errors.newIsActive && <Message negative>{errors.newIsActive}</Message>}
           </FormField>
-
-          {formData.newIsAdmin === 'Residente' && (
-            <>
-              <FormField>
-                <Label>Privada</Label>
-                <Input
-                  name='privada'
-                  type="text"
-                  value={formData.newPrivada}
-                  onChange={handleChange}
-                />
-              </FormField>
-              <FormField error={!!errors.newCalle}>
-                <Label>Calle</Label>
-                <Input
-                  name='newCalle'
-                  type="text"
-                  value={formData.newCalle}
-                  onChange={handleChange}
-                />
-                {errors.newCalle && <Message negative>{errors.newCalle}</Message>}
-              </FormField>
-              <FormField error={!!errors.newCasa}>
-                <Label>Casa</Label>
-                <Input
-                  name='newCasa'
-                  type='number'
-                  value={formData.newCasa}
-                  onChange={handleChange}
-                />
-                {errors.newCasa && <Message negative>{errors.newCasa}</Message>}
-              </FormField>
-            </>
-          )}
-
           <FormField error={!!errors.newEmail}>
             <Label>Correo</Label>
             <Input

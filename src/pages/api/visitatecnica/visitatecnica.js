@@ -133,12 +133,71 @@ export default async function handler(req, res) {
       const searchQuery = `%${search.toLowerCase()}%`; // Convertimos la búsqueda a minúsculas
       try {
         const [rows] = await connection.query(
-          `SELECT id, usuario_id, folio, visitatecnica, descripcion, date, estado
-                    FROM visitatecnica 
-                    WHERE LOWER(visitatecnica) LIKE ? 
-                    OR LOWER(folio) LIKE ? 
-                    OR LOWER(descripcion) LIKE ?`,
-          [searchQuery, searchQuery, searchQuery]
+          `SELECT 
+              visitatecnica.id,
+              visitatecnica.usuario_id,
+              usuarios.nombre AS usuario_nombre,
+              usuarios.isadmin AS usuario_isadmin,
+              visitatecnica.folio,
+              visitatecnica.visitatecnica,
+              visitatecnica.descripcion,
+              visitatecnica.date,
+              visitatecnica.estado,
+              visitatecnica.residencial_id,
+              visitatecnica.title1,
+              visitatecnica.title2,
+              visitatecnica.title3,
+              visitatecnica.title4,
+              visitatecnica.title5,
+              visitatecnica.title6,
+              visitatecnica.title7,
+              visitatecnica.title8,
+              visitatecnica.title9,
+              visitatecnica.title10,
+              visitatecnica.title11,
+              visitatecnica.title12,
+              visitatecnica.title13,
+              visitatecnica.title14,
+              visitatecnica.title15,
+              visitatecnica.title16,
+              visitatecnica.title17,
+              visitatecnica.title18,
+              visitatecnica.title19,
+              visitatecnica.title20,
+              visitatecnica.img1,
+              visitatecnica.img2,
+              visitatecnica.img3,
+              visitatecnica.img4,
+              visitatecnica.img5,
+              visitatecnica.img6,
+              visitatecnica.img7,
+              visitatecnica.img8,
+              visitatecnica.img9,
+              visitatecnica.img10,
+              visitatecnica.img11,
+              visitatecnica.img12,
+              visitatecnica.img13,
+              visitatecnica.img14,
+              visitatecnica.img15,
+              visitatecnica.img16,
+              visitatecnica.img17,
+              visitatecnica.img18,
+              visitatecnica.img19,
+              visitatecnica.img20
+            FROM 
+              visitatecnica 
+            JOIN usuarios ON visitatecnica.usuario_id = usuarios.id
+            WHERE 
+              LOWER(visitatecnica.visitatecnica) LIKE ? 
+            OR 
+              LOWER(visitatecnica.folio) LIKE ? 
+            OR 
+              LOWER(visitatecnica.descripcion) LIKE ?
+            OR 
+              LOWER(visitatecnica.date) LIKE ?
+            OR 
+              LOWER(visitatecnica.estado) LIKE ?`,
+          [searchQuery, searchQuery, searchQuery, searchQuery, searchQuery]
         )
 
         if (rows.length === 0) {

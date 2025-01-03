@@ -13,7 +13,7 @@ export function VisitaProvForm(props) {
   const [visitaprovedor, setVisitaprov] = useState('')
   const [descripcion, setDescripcion] = useState('')
 
-  const { reload, onReload, onOpenCloseForm, onToastSuccessVisitaprov } = props
+  const { reload, onReload, onOpenCloseForm, onToastSuccess } = props
 
   const [errors, setErrors] = useState({})
 
@@ -66,7 +66,7 @@ export function VisitaProvForm(props) {
 
       onReload()
       onOpenCloseForm()
-      onToastSuccessVisitaprov()
+      onToastSuccess()
 
     } catch (error) {
       console.error('Error al crear la visita provedor:', error)

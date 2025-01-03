@@ -8,11 +8,11 @@ import styles from './ResidencialEditForm.module.css'
 
 export function ResidencialEditForm(props) {
 
-  const { reload, onReload, usuario, onOpenEditUsuario, onToastSuccessUsuarioMod } = props
+  const { reload, onReload, residencial, onOpenEditResidencial, onToastSuccessMod } = props
 
   const [formData, setFormData] = useState({
-    nombre: usuario.nombre,
-    direccion: usuario.direccion,
+    nombre: residencial.nombre,
+    direccion: residencial.direccion,
   })
 
   const [errors, setErrors] = useState({})
@@ -49,30 +49,23 @@ export function ResidencialEditForm(props) {
     }
 
     try {
-      await axios.put(`/api/residenciales/residenciales?id=${usuario.id}`, {
+      await axios.put(`/api/residenciales/residenciales?id=${residencial.id}`, {
         ...formData,
         date: formData.date ? formData.date.toISOString().split('T')[0] : null
       })
       onReload()
-      onOpenEditUsuario()
-      onToastSuccessUsuarioMod()
+      onOpenEditResidencial()
+      onToastSuccessMod()
     } catch (error) {
-      console.error('Error actualizando el usuario:', error)
+      console.error('Error actualizando el residencial:', error)
     }
   }
-
-  const opcionesEstado = [
-    { key: 1, text: 'Pendiente', value: 'Pendiente' },
-    { key: 2, text: 'En proceso', value: 'En proceso' },
-    { key: 3, text: 'Realizada', value: 'Realizada' }
-  ]
-
 
   return (
 
     <>
 
-      <IconClose onOpenClose={onOpenEditUsuario} />
+      <IconClose onOpenClose={onOpenEditResidencial} />
 
       <Form>
         <FormGroup widths='equal'>

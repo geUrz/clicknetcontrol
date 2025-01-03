@@ -32,16 +32,6 @@ export function VisitaTecnicaList(props) {
     setShowDetalles(false)
   }
 
-  const [filterEstado, setFilterEstado] = useState('')
-  const [filterFecha, setFilterFecha] = useState(null)
-
-  const filteredVisitatecnica = (visitatecnica || []).filter((visitatecnica) => {
-    return (
-      (filterEstado === '' || filterEstado === 'Todas' || visitatecnica.estado === filterEstado) &&
-      (filterFecha === null || visitatecnica.date === formatDateInc(filterFecha))
-    )
-  })
-
   const opcionesEstado = [
     { key: 1, text: 'Todas', value: 'Todas' },
     { key: 2, text: 'Pendiente', value: 'Pendiente' },
@@ -65,46 +55,14 @@ export function VisitaTecnicaList(props) {
 
     <>
 
-      <div className={styles.filters}>
-
-        <h1>Buscar por:</h1>
-
-        <Form>
-          <FormGroup>
-          <Label className={styles.label}>Estatus</Label>
-            <Dropdown
-                placeholder='Todas'
-                fluid
-                selection
-                options={opcionesEstado}
-                value={filterEstado}
-                onChange={(e, data) => setFilterEstado(data.value)}
-              />
-            <Label className={styles.label}>Fecha</Label>
-            <FormField>
-              <DatePicker
-                selected={filterFecha}
-                onChange={(date) => setFilterFecha(date)}
-                dateFormat="dd/MM/yyyy"
-                placeholderText="dd/mm/aaaa"
-                locale="es"
-                isClearable
-                showPopperArrow={false}
-                popperPlacement="bottom"
-              />
-            </FormField>
-          </FormGroup>
-        </Form>
-      </div>
-
       {showLoading ? (
         <Loading size={45} loading={1} />
       ) : (
-        size(filteredVisitatecnica) === 0 ? (
+        size(visitatecnica) === 0 ? (
           <ListEmpty />
         ) : (
           <div className={styles.main}>
-            {map(filteredVisitatecnica, (visitatecnica) => {
+            {map(visitatecnica, (visitatecnica) => {
               const statusClass = getStatusClass(visitatecnica.estado)
 
               return (
@@ -141,7 +99,7 @@ export function VisitaTecnicaList(props) {
             reload={reload}
             onReload={onReload}
             visitatecnica={visitatecnicaSeleccionada}
-            onOpenCloseDetalles={onCloseDetalles}
+            onCloseDetalles={onCloseDetalles}
             onToastSuccessMod={onToastSuccessMod}
             onToastSuccessDel={onToastSuccessDel}
           />

@@ -10,7 +10,7 @@ import styles from './ResidencialList.module.css'
 
 export function ResidencialList(props) {
 
-  const { reload, onReload, residenciales, onToastSuccessResidencialMod } = props
+  const { reload, onReload, residenciales, onToastSuccessMod } = props
 
   const { loading } = useAuth()
 
@@ -84,8 +84,8 @@ export function ResidencialList(props) {
             reload={reload}
             onReload={onReload}
             residencial={residencialSeleccionado}
-            onOpenCloseDetalles={onCloseDetalles}
-            onToastSuccessResidencialMod={onToastSuccessResidencialMod}
+            onCloseDetalles={onCloseDetalles}
+            onToastSuccessMod={onToastSuccessMod}
           />
         )}
       </BasicModal>

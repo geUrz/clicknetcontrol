@@ -60,24 +60,54 @@ async function sendNotificationToAdmins(header, message, url) {
 }
 
 export default async function handler(req, res) {
-  const { id } = req.query; // Agregamos 'search' al destructuring
+  const { id, search } = req.query
 
   if (req.method === 'GET') {
 
-    // Caso para obtener todos los residenciales
+    if (search) {
+      const searchQuery = `%${search.toLowerCase()}%`; // Convertimos la búsqueda a minúsculas
+      try {
+        const [rows] = await connection.query(
+          `SELECT 
+            id,
+            usuario_id,
+            folio,
+            nombre,
+            direccion,
+            createdAt
+          FROM residenciales 
+          WHERE 
+            LOWER(folio) LIKE ? 
+          OR 
+            LOWER(nombre) LIKE ? 
+          OR 
+            LOWER(direccion) LIKE ?
+          OR 
+            LOWER(createdAt) LIKE ?`,
+          [searchQuery, searchQuery, searchQuery, searchQuery]
+        )
+
+/*         if (rows.length === 0) {
+          return res.status(404).json({ message: 'No se encontraron anuncios' });
+        }  */
+
+        res.status(200).json(rows);
+      } catch (error) {
+        res.status(500).json({ error: 'Error al realizar la búsqueda' });
+      }
+      return
+    }
+
     try {
       const [rows] = await connection.query(
         `SELECT
         residenciales.id,
         residenciales.usuario_id,
         residenciales.folio,
-        usuarios.nombre AS usuario_nombre,
-        usuarios.isadmin AS usuario_isadmin,
         residenciales.nombre,
         residenciales.direccion,
         residenciales.createdAt
     FROM residenciales
-    JOIN usuarios ON residenciales.usuario_id = usuarios.id
     ORDER BY residenciales.updatedAt DESC
     `)
       res.status(200).json(rows)

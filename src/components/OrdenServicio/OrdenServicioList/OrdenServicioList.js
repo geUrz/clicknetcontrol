@@ -5,16 +5,14 @@ import { BasicModal } from '@/layouts'
 import { OrdenServicioDetalles } from '../OrdenServicioDetalles'
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
-import { Dropdown, Form, FormField, FormGroup, Label } from 'semantic-ui-react'
-import { formatDate, formatDateInc } from '@/helpers'
+import { formatDate } from '@/helpers'
 import { getStatusClass } from '@/helpers/getStatusClass/getStatusClass'
-import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import styles from './OrdenServicioList.module.css'
 
 export function OrdenServicioList(props) {
 
-  const { reload, onReload, ordenservicio, onToastSuccessOrdenservicioMod, onToastSuccessOrdenservicioDel } = props
+  const { reload, onReload, ordenservicio, onToastSuccessMod, onToastSuccessDel } = props
 
   const { loading } = useAuth()
 
@@ -32,23 +30,6 @@ export function OrdenServicioList(props) {
     setShowDetalles(false)
   }
 
-  const [filterEstado, setFilterEstado] = useState('')
-  const [filterFecha, setFilterFecha] = useState(null)
-
-  const filteredOrdenservicio = (ordenservicio || []).filter((ordenservicio) => {
-    return (
-      (filterEstado === '' || filterEstado === 'Todas' || ordenservicio.estado === filterEstado) &&
-      (filterFecha === null || ordenservicio.date === formatDateInc(filterFecha))
-    )
-  })
-
-  const opcionesEstado = [
-    { key: 1, text: 'Todas', value: 'Todas' },
-    { key: 2, text: 'Pendiente', value: 'Pendiente' },
-    { key: 3, text: 'En proceso', value: 'En proceso' },
-    { key: 4, text: 'Realizada', value: 'Realizada' }
-  ]
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowLoading(false)
@@ -65,46 +46,14 @@ export function OrdenServicioList(props) {
 
     <>
 
-      <div className={styles.filters}>
-
-        <h1>Buscar por:</h1>
-
-        <Form>
-          <FormGroup>
-          <Label className={styles.label}>Estatus</Label>
-            <Dropdown
-                placeholder='Todas'
-                fluid
-                selection
-                options={opcionesEstado}
-                value={filterEstado}
-                onChange={(e, data) => setFilterEstado(data.value)}
-              />
-            <Label className={styles.label}>Fecha</Label>
-            <FormField>
-              <DatePicker
-                selected={filterFecha}
-                onChange={(date) => setFilterFecha(date)}
-                dateFormat="dd/MM/yyyy"
-                placeholderText="dd/mm/aaaa"
-                locale="es"
-                isClearable
-                showPopperArrow={false}
-                popperPlacement="bottom"
-              />
-            </FormField>
-          </FormGroup>
-        </Form>
-      </div>
-
       {showLoading ? (
         <Loading size={45} loading={1} />
       ) : (
-        size(filteredOrdenservicio) === 0 ? (
+        size(ordenservicio) === 0 ? (
           <ListEmpty />
         ) : (
           <div className={styles.main}>
-            {map(filteredOrdenservicio, (ordenservicio) => {
+            {map(ordenservicio, (ordenservicio) => {
               const statusClass = getStatusClass(ordenservicio.estado)
 
               return (
@@ -115,7 +64,7 @@ export function OrdenServicioList(props) {
                     </div>
                     <div className={styles.column2}>
                       <div >
-                        <h1>Órden de servicio</h1>
+                        <h1>Orden de servicio</h1>
                         <h2>{ordenservicio.nombre}</h2>
                       </div>
                       <div >
@@ -137,9 +86,9 @@ export function OrdenServicioList(props) {
             reload={reload}
             onReload={onReload}
             ordenservicio={ordenservicioSeleccionada}
-            onOpenCloseDetalles={onCloseDetalles}
-            onToastSuccessOrdenservicioMod={onToastSuccessOrdenservicioMod}
-            onToastSuccessOrdenservicioDel={onToastSuccessOrdenservicioDel}
+            onCloseDetalles={onCloseDetalles}
+            onToastSuccessMod={onToastSuccessMod}
+            onToastSuccessDel={onToastSuccessDel}
           />
         )}
       </BasicModal>

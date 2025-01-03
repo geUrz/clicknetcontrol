@@ -12,7 +12,7 @@ import styles from './home.module.css'
 export default function Home() {
 
   const { user, loading } = useAuth()
-
+  
   const [reload, setReload] = useState(false)
 
   const onReload = useCallback(() => setReload((prevState) => !prevState), [])
@@ -25,6 +25,7 @@ export default function Home() {
     visitaprovedores: null,
     residenciales: null,
     usuarios: null,
+    residentes: null,
     ordenservicio: null,
     recibos: null,
     cotizaciones: null
@@ -50,7 +51,8 @@ export default function Home() {
       fetchData(`/api/reportes/reportes?residencial_id=${user.residencial_id}`, 'reportes')
       fetchData(`/api/visitaprovedores/visitaprovedores?residencial_id=${user.residencial_id}`, 'visitaprovedores')
       fetchData('/api/residenciales/residenciales', 'residenciales'),
-        fetchData('/api/usuarios/usuarios', 'usuarios')
+      fetchData('/api/usuarios/usuarios?isadmin=Admin, Técnico', 'usuarios')
+      fetchData(`/api/usuarios/usuarios?isadmin=Residente, Caseta, Comité`, 'residentes')
       fetchData(`/api/ordenservicio/ordenservicio?residencial_id=${user.residencial_id}`, 'ordenservicio')
       fetchData(`/api/recibos/recibos?residencial_id=${user.residencial_id}`, 'recibos')
       fetchData(`/api/cotizaciones/cotizaciones?residencial_id=${user.residencial_id}`, 'cotizaciones')
@@ -65,6 +67,7 @@ export default function Home() {
     visitaprovedores: size(data.visitaprovedores),
     residenciales: size(data.residenciales),
     usuarios: size(data.usuarios),
+    residentes: size(data.residentes),
     ordenservicio: size(data.ordenservicio),
     recibos: size(data.recibos),
     cotizaciones: size(data.cotizaciones)
@@ -116,6 +119,11 @@ export default function Home() {
 
                     <Card link='/usuarios' title='Usuarios'
                       countUsuarios={countData.usuarios}>
+                      <FaUsers />
+                    </Card>
+
+                    <Card link='/residentes' title='Residentes'
+                      countResidentes={countData.residentes}>
                       <FaUsers />
                     </Card>
 

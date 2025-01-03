@@ -2,15 +2,25 @@ import connection from "@/libs/db"
 import bcrypt from "bcrypt"
 
 export default async function handler(req, res) {
-    const { id, search } = req.query;
+    const { id, isadmin, search } = req.query;
 
     if (req.method === 'GET') {
 
         if (search) {
             const searchQuery = `%${search.toLowerCase()}%`
+            
+            // Convertir 'Activo' a 1 y 'Inactivo' a 0
+            let isActiveQuery = null;
+            if (search.toLowerCase() === "activo") {
+                isActiveQuery = 1;
+            } else if (search.toLowerCase() === "inactivo") {
+                isActiveQuery = 0;
+            }
+        
             try {
-                const [rows] = await connection.query(
-                    `SELECT  
+                const query = `
+                    SELECT  
+                        usuarios.id,
                         usuarios.folio, 
                         usuarios.nombre, 
                         usuarios.usuario, 
@@ -21,7 +31,7 @@ export default async function handler(req, res) {
                         usuarios.isadmin,
                         usuarios.isactive, 
                         usuarios.residencial_id, 
-                        residenciales.nombre AS nombre_residencial
+                        residenciales.nombre AS residencial_nombre
                     FROM 
                         usuarios
                     LEFT JOIN 
@@ -33,20 +43,69 @@ export default async function handler(req, res) {
                     OR LOWER(usuarios.calle) LIKE ? 
                     OR LOWER(usuarios.casa) LIKE ? 
                     OR LOWER(usuarios.email) LIKE ? 
-                    OR LOWER(residenciales.nombre) LIKE ? 
-                    ORDER BY usuarios.updatedAt DESC`, 
-                    [searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, searchQuery]
-                )
-
-                if (rows.length === 0) {
-                    return res.status(404).json({ message: 'No se encontraron usuarios' })
+                    OR LOWER(CAST(usuarios.isactive AS CHAR)) LIKE ?
+                    OR LOWER(residenciales.nombre) LIKE ?  
+                    ${isActiveQuery !== null ? "OR usuarios.isactive = ?" : ""}
+                    ORDER BY usuarios.updatedAt DESC`;
+        
+                const params = [
+                    searchQuery, searchQuery, searchQuery, searchQuery, 
+                    searchQuery, searchQuery, searchQuery, searchQuery, 
+                    searchQuery
+                ];
+        
+                if (isActiveQuery !== null) {
+                    params.push(isActiveQuery);
                 }
 
-                res.status(200).json(rows)
+                /* if (rows.length === 0) {
+                    return res.status(404).json({ message: 'No se encontraron usuarios' })
+                } */
+        
+                const [rows] = await connection.query(query, params);
+                res.status(200).json(rows);
+        
             } catch (error) {
-                res.status(500).json({ error: 'Error al realizar la búsqueda' })
+                res.status(500).json({ error: 'Error al realizar la búsqueda' });
             }
             return;
+        }
+        
+
+        if (isadmin) {
+
+            const isadminValues = isadmin.split(',').map(value => value.trim())
+
+            try {
+                const [rows] = await connection.query(
+                    `SELECT 
+                        usuarios.id, 
+                        usuarios.folio, 
+                        usuarios.nombre, 
+                        usuarios.usuario, 
+                        usuarios.privada, 
+                        usuarios.calle, 
+                        usuarios.casa, 
+                        usuarios.email, 
+                        usuarios.isadmin,
+                        usuarios.isactive, 
+                        usuarios.residencial_id, 
+                        residenciales.nombre AS residencial_nombre
+                        FROM usuarios 
+                        LEFT JOIN 
+                        residenciales ON usuarios.residencial_id = residenciales.id
+                        WHERE isadmin IN (?)`,
+                    [isadminValues]
+                );
+
+                /* if (rows.length === 0) {
+                    return res.status(404).json({ error: 'Usuario no encontrado' });
+                } */
+
+                res.status(200).json(rows);
+            } catch (error) {
+                res.status(500).json({ error: error.message });
+            }
         }
 
         if (id) {
@@ -79,7 +138,7 @@ export default async function handler(req, res) {
                         usuarios.isadmin,
                         usuarios.isactive, 
                         usuarios.residencial_id, 
-                        residenciales.nombre AS nombre_residencial
+                        residenciales.nombre AS residencial_nombre
                     FROM 
                         usuarios
                     LEFT JOIN 
@@ -94,7 +153,7 @@ export default async function handler(req, res) {
         }
     } else if (req.method === 'POST') {
         // Crear un nuevo usuario
-        const { folio, nombre, usuario, privada, calle, casa, email, isadmin, residencial_id, password } = req.body;
+        const { folio, nombre, usuario, privada, calle, casa, email, isadmin, isactive, residencial_id, password } = req.body;
 
         if (!password) {
             return res.status(400).json({ error: 'Se requiere una contraseña' });

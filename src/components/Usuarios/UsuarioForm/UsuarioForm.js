@@ -116,9 +116,6 @@ export function UsuarioForm(props) {
         folio,
         nombre: credentials.nombre,
         usuario: credentials.usuario,
-        privada: credentials.privada,
-        calle: credentials.calle,
-        casa: credentials.casa,
         email: credentials.email,
         isadmin: credentials.isadmin,
         isactive,
@@ -129,9 +126,6 @@ export function UsuarioForm(props) {
       setCredentials({
         nombre: '',
         usuario: '',
-        privada: '',
-        calle: '',
-        casa: '',
         email: '',
         isadmin: '',
         residencial_id: '',
@@ -184,70 +178,6 @@ export function UsuarioForm(props) {
                 />
                 {errors.usuario && <Message negative>{errors.usuario}</Message>}
               </FormField>
-              <FormField error={!!errors.email}>
-                <Label>Correo</Label>
-                <Input
-                  name='email'
-                  type='email'
-                  value={credentials.email}
-                  onChange={handleChange}
-                />
-                {errors.email && <Message negative>{errors.email}</Message>}
-              </FormField>
-              <FormField error={!!errors.isadmin}>
-                <Label>Nivel</Label>
-                <Dropdown
-                  placeholder='Selecciona nivel'
-                  fluid
-                  selection
-                  options={[
-                    { key: 'Admin', text: 'Admin', value: 'Admin' },
-                    { key: 'Caseta', text: 'Caseta', value: 'Caseta' },
-                    { key: 'Comité', text: 'Comité', value: 'Comité' },
-                    { key: 'Residente', text: 'Residente', value: 'Residente' },
-                    { key: 'Técnico', text: 'Técnico', value: 'Técnico' },
-                  ]}
-                  name='isadmin'
-                  value={credentials.isadmin}
-                  onChange={handleChange}
-                />
-                {errors.isadmin && <Message negative>{errors.isadmin}</Message>}
-              </FormField>
-
-              {credentials.isadmin === 'Residente' && (
-                <>
-                  <FormField>
-                    <Label>Privada</Label>
-                    <Input
-                      name='privada'
-                      type="text"
-                      value={credentials.privada}
-                      onChange={handleChange}
-                    />
-                  </FormField>
-                  <FormField error={!!errors.calle}>
-                    <Label>Calle</Label>
-                    <Input
-                      name='calle'
-                      type="text"
-                      value={credentials.calle}
-                      onChange={handleChange}
-                    />
-                    {errors.calle && <Message negative>{errors.calle}</Message>}
-                  </FormField>
-                  <FormField error={!!errors.casa}>
-                    <Label>Casa</Label>
-                    <Input
-                      name='casa'
-                      type='number'
-                      value={credentials.casa}
-                      onChange={handleChange}
-                    />
-                    {errors.casa && <Message negative>{errors.casa}</Message>}
-                  </FormField>
-                </>
-              )}
-
               <FormField error={!!errors.residencial_id}>
                 <Label>Residencial</Label>
                 <Dropdown
@@ -261,7 +191,32 @@ export function UsuarioForm(props) {
                 />
                 {errors.residencial_id && <Message negative>{errors.residencial_id}</Message>}
               </FormField>
-
+              <FormField error={!!errors.isadmin}>
+                <Label>Nivel</Label>
+                <Dropdown
+                  placeholder='Selecciona nivel'
+                  fluid
+                  selection
+                  options={[
+                    { key: 'Admin', text: 'Admin', value: 'Admin' },
+                    { key: 'Técnico', text: 'Técnico', value: 'Técnico' },
+                  ]}
+                  name='isadmin'
+                  value={credentials.isadmin}
+                  onChange={handleChange}
+                />
+                {errors.isadmin && <Message negative>{errors.isadmin}</Message>}
+              </FormField>
+              <FormField error={!!errors.email}>
+                <Label>Correo</Label>
+                <Input
+                  name='email'
+                  type='email'
+                  value={credentials.email}
+                  onChange={handleChange}
+                />
+                {errors.email && <Message negative>{errors.email}</Message>}
+              </FormField>
               <FormField error={!!errors.password}>
                 <Label>Contraseña</Label>
                 <Input

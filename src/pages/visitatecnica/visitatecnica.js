@@ -1,10 +1,12 @@
+import React, { useEffect, useState } from 'react'
 import { Add, Loading, ToastDelete, ToastSuccess } from '@/components/Layouts'
 import ProtectedRoute from '@/components/Layouts/ProtectedRoute/ProtectedRoute'
-import { VisitaTecnicaForm, VisitaTecnicaList } from '@/components/VisitaTecnica'
+import { SearchVisitaTecnica, VisitaTecnicaForm, VisitaTecnicaList, VisitaTecnicaListSearch } from '@/components/VisitaTecnica'
 import { useAuth } from '@/contexts/AuthContext'
 import { BasicLayout, BasicModal } from '@/layouts'
 import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import styles from './visitatecnica.module.css'
+import { FaSearch } from 'react-icons/fa'
 
 export default function Visitatecnica() {
 
@@ -17,6 +19,12 @@ export default function Visitatecnica() {
   const [openForm, setOpenForm] = useState(false)
 
   const onOpenCloseForm = () => setOpenForm((prevState) => !prevState)
+
+  const [search, setSearch] = useState(false)
+
+  const onOpenCloseSearch = () => setSearch((prevState) => !prevState)
+
+  const [resultados, setResultados] = useState([])
 
   const [visitatecnica, setVisitatecnica] = useState(null)
 
@@ -73,6 +81,28 @@ export default function Visitatecnica() {
         {toastSuccessMod && <ToastSuccess contain='Modificada exitosamente' onClose={() => setToastSuccessMod(false)} />}
 
         {toastSuccessDel && <ToastDelete contain=' Eliminada exitosamente' onClose={() => setToastSuccessDel(false)} />}
+
+        {!search ? (
+          ''
+        ) : (
+          <div className={styles.searchMain}>
+            <SearchVisitaTecnica onResults={setResultados} reload={reload} onReload={onReload} onToastSuccessMod={onToastSuccessMod} onOpenCloseSearch={onOpenCloseSearch} />
+            {resultados.length > 0 && (
+              <VisitaTecnicaListSearch visitas={resultados} reload={reload} onReload={onReload} />
+            )}
+          </div>
+        )}
+
+        {!search ? (
+          <div className={styles.iconSearchMain}>
+            <div className={styles.iconSearch} onClick={onOpenCloseSearch}>
+              <h1>Buscar visita técnica</h1>
+              <FaSearch />
+            </div>
+          </div>
+        ) : (
+          ''
+        )}
 
         <VisitaTecnicaList reload={reload} onReload={onReload} visitatecnica={visitatecnica} onToastSuccessMod={onToastSuccessMod} onToastSuccessDel={onToastSuccessDel} />
 

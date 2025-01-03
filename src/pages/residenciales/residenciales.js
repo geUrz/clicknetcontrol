@@ -4,7 +4,8 @@ import { useAuth } from '@/contexts/AuthContext'
 import { BasicLayout, BasicModal } from '@/layouts'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
-import { ResidencialForm, ResidencialList } from '@/components/residenciales'
+import { ResidencialesListSearch, ResidencialForm, ResidencialList, SearchResidencial } from '@/components/residenciales'
+import { FaSearch } from 'react-icons/fa'
 import styles from './residenciales.module.css'
 
 
@@ -20,6 +21,12 @@ export default function Residenciales() {
 
   const onOpenCloseForm = () => setOpenForm((prevState) => !prevState)
 
+  const [search, setSearch] = useState(false)
+  
+  const onOpenCloseSearch = () => setSearch((prevState) => !prevState)
+  
+  const [resultados, setResultados] = useState([])
+
   const [residenciales, setResidenciales] = useState(null)
 
   useEffect(() => {
@@ -33,20 +40,20 @@ export default function Residenciales() {
     })()
   }, [reload])
 
-  const [toastSuccessResidenciales, setToastSuccessResidenciales] = useState(false)
-  const [toastSuccessResidencialesMod, setToastSuccessResidencialesMod] = useState(false)
+  const [toastSuccess, setToastSuccess] = useState(false)
+  const [toastSuccessMod, setToastSuccessMod] = useState(false)
 
-  const onToastSuccessResidencial = () => {
-    setToastSuccessResidenciales(true)
+  const onToastSuccess = () => {
+    setToastSuccess(true)
     setTimeout(() => {
-      setToastSuccessResidenciales(false)
+      setToastSuccess(false)
     }, 3000)
   }
 
-  const onToastSuccessResidencialMod = () => {
-    setToastSuccessResidencialesMod(true)
+  const onToastSuccessMod = () => {
+    setToastSuccessMod(true)
     setTimeout(() => {
-      setToastSuccessResidencialesMod(false)
+      setToastSuccessMod(false)
     }, 3000)
   }
 
@@ -60,11 +67,33 @@ export default function Residenciales() {
 
       <BasicLayout title='Residenciales' relative onReload={onReload}>
 
-        {toastSuccessResidenciales && <ToastSuccess contain='Creado exitosamente' onClose={() => setToastSuccessResidenciales(false)} />}
+        {toastSuccess && <ToastSuccess contain='Creado exitosamente' onClose={() => setToastSuccess(false)} />}
 
-        {toastSuccessResidencialesMod && <ToastSuccess contain='Modificado exitosamente' onClose={() => setToastSuccessResidencialesMod(false)} />}
+        {toastSuccessMod && <ToastSuccess contain='Modificado exitosamente' onClose={() => setToastSuccessMod(false)} />}
 
-        <ResidencialList reload={reload} onReload={onReload} residenciales={residenciales} onToastSuccessResidencialMod={onToastSuccessResidencialMod} />
+        {!search ? (
+        ''
+      ) : (
+        <div className={styles.searchMain}>
+          <SearchResidencial onResults={setResultados} reload={reload} onReload={onReload} onToastSuccessMod={onToastSuccessMod} onOpenCloseSearch={onOpenCloseSearch} />
+          {resultados.length > 0 && (
+            <ResidencialesListSearch visitas={resultados} reload={reload} onReload={onReload} />
+          )}
+        </div>
+      )}
+
+      {!search ? (
+        <div className={styles.iconSearchMain}>
+          <div className={styles.iconSearch} onClick={onOpenCloseSearch}>
+            <h1>Buscar residencial</h1>
+            <FaSearch />
+          </div>
+        </div>
+      ) : (
+        ''
+      )}
+
+        <ResidencialList reload={reload} onReload={onReload} residenciales={residenciales} onToastSuccessMod={onToastSuccessMod} />
 
         {user.isadmin === 'Admin' ? (
           <Add titulo='crear reporte' onOpenClose={onOpenCloseForm} />
@@ -75,7 +104,7 @@ export default function Residenciales() {
       </BasicLayout>
 
       <BasicModal title='crear residencial' show={openForm} onClose={onOpenCloseForm}>
-        <ResidencialForm reload={reload} onReload={onReload} onOpenCloseForm={onOpenCloseForm} onToastSuccessResidencial={onToastSuccessResidencial} />
+        <ResidencialForm reload={reload} onReload={onReload} onOpenCloseForm={onOpenCloseForm} onToastSuccess={onToastSuccess} />
       </BasicModal>
 
     </ProtectedRoute>

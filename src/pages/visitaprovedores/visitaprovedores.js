@@ -1,10 +1,12 @@
+import React, { useEffect, useState } from 'react'
 import { Add, Loading, ToastDelete, ToastSuccess } from '@/components/Layouts'
 import ProtectedRoute from '@/components/Layouts/ProtectedRoute/ProtectedRoute'
-import { VisitaProvForm, VisitaProvsList } from '@/components/VisitaProvs'
+import { SearchVisitaProv, VisitaProvForm, VisitaProvsList, VisitaProvsListSearch } from '@/components/VisitaProvs'
 import { useAuth } from '@/contexts/AuthContext'
 import { BasicLayout, BasicModal } from '@/layouts'
 import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import styles from './visitaprovedores.module.css'
+import { FaSearch } from 'react-icons/fa'
 
 export default function Visitaprovedores() {
 
@@ -17,6 +19,12 @@ export default function Visitaprovedores() {
   const [openForm, setOpenForm] = useState(false)
 
   const onOpenCloseForm = () => setOpenForm((prevState) => !prevState)
+
+  const [search, setSearch] = useState(false)
+  
+  const onOpenCloseSearch = () => setSearch((prevState) => !prevState)
+  
+  const [resultados, setResultados] = useState([])
 
   const [visitaprovs, setVisitaprovs] = useState(null)
 
@@ -33,28 +41,28 @@ export default function Visitaprovedores() {
     }
   }, [reload, user])
 
-  const [toastSuccessVisitaprov, setToastSuccessVisitaprov] = useState(false)
-  const [toastSuccessVisitaprovMod, setToastSuccessVisitaprovMod] = useState(false)
-  const [toastSuccessVisitaprovDel, setToastSuccessVisitaprovDel] = useState(false)
+  const [toastSuccess, setToastSuccess] = useState(false)
+  const [toastSuccessMod, setToastSuccessMod] = useState(false)
+  const [toastSuccessDel, setToastSuccessDel] = useState(false)
 
-  const onToastSuccessVisitaprov = () => {
-    setToastSuccessVisitaprov(true)
+  const onToastSuccess = () => {
+    setToastSuccess(true)
     setTimeout(() => {
-      setToastSuccessVisitaprov(false)
+      setToastSuccess(false)
     }, 3000)
   }
 
-  const onToastSuccessVisitaprovMod = () => {
-    setToastSuccessVisitaprovMod(true)
+  const onToastSuccessMod = () => {
+    setToastSuccessMod(true)
     setTimeout(() => {
-      setToastSuccessVisitaprovMod(false)
+      setToastSuccessMod(false)
     }, 3000)
   }
 
-  const onToastSuccessVisitaprovDel = () => {
-    setToastSuccessVisitaprovDel(true)
+  const onToastSuccessDel = () => {
+    setToastSuccessDel(true)
     setTimeout(() => {
-      setToastSuccessVisitaprovDel(false)
+      setToastSuccessDel(false)
     }, 3000)
   }
 
@@ -68,13 +76,35 @@ export default function Visitaprovedores() {
 
       <BasicLayout title='visita proveedores' relative onReload={onReload}>
 
-        {toastSuccessVisitaprov && <ToastSuccess contain='Creado exitosamente' onClose={() => setToastSuccessVisitaprov(false)} />}
+        {toastSuccess && <ToastSuccess contain='Creado exitosamente' onClose={() => setToastSuccess(false)} />}
 
-        {toastSuccessVisitaprovMod && <ToastSuccess contain='Modificado exitosamente' onClose={() => setToastSuccessVisitaprovMod(false)} />}
+        {toastSuccessMod && <ToastSuccess contain='Modificado exitosamente' onClose={() => setToastSuccessMod(false)} />}
 
-        {toastSuccessVisitaprovDel && <ToastDelete contain='Visita proveedor eliminado exitosamente' onClose={() => setToastSuccessVisitaprovDel(false)} />}
+        {toastSuccessDel && <ToastDelete contain='Eliminado exitosamente' onClose={() => setToastSuccessDel(false)} />}
 
-        <VisitaProvsList reload={reload} onReload={onReload} visitaprovs={visitaprovs} onToastSuccessVisitaprovMod={onToastSuccessVisitaprovMod} onToastSuccessVisitaprovDel={onToastSuccessVisitaprovDel} />
+        {!search ? (
+          ''
+        ) : (
+          <div className={styles.searchMain}>
+            <SearchVisitaProv onResults={setResultados} reload={reload} onReload={onReload} onToastSuccessMod={onToastSuccessMod} onOpenCloseSearch={onOpenCloseSearch} />
+            {resultados.length > 0 && (
+              <VisitaProvsListSearch visitas={resultados} reload={reload} onReload={onReload} />
+            )}
+          </div>
+        )}
+
+        {!search ? (
+          <div className={styles.iconSearchMain}>
+            <div className={styles.iconSearch} onClick={onOpenCloseSearch}>
+              <h1>Buscar visita proveedor</h1>
+              <FaSearch />
+            </div>
+          </div>
+        ) : (
+          ''
+        )}
+
+        <VisitaProvsList reload={reload} onReload={onReload} visitaprovs={visitaprovs} onToastSuccessMod={onToastSuccessMod} onToastSuccessDel={onToastSuccessDel} />
 
         {user.isadmin === 'Admin' || user.isadmin === 'Caseta' || user.isadmin === 'Comité' ? (
           <Add onOpenClose={onOpenCloseForm} />
@@ -85,7 +115,7 @@ export default function Visitaprovedores() {
       </BasicLayout>
 
       <BasicModal title='crear visita proveedor' show={openForm} onClose={onOpenCloseForm}>
-        <VisitaProvForm reload={reload} onReload={onReload} onOpenCloseForm={onOpenCloseForm} onToastSuccessVisitaprov={onToastSuccessVisitaprov} />
+        <VisitaProvForm reload={reload} onReload={onReload} onOpenCloseForm={onOpenCloseForm} onToastSuccess={onToastSuccess} />
       </BasicModal>
 
     </ProtectedRoute>

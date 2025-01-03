@@ -9,7 +9,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import styles from './VisitaProvDetalles.module.css'
 
 export function VisitaProvDetalles(props) {
-  const { reload, onReload, visitaprov, onOpenCloseDetalles, onToastSuccessVisitaprovMod, onToastSuccessVisitaprovDel } = props
+  const { reload, onReload, visitaprov, onCloseDetalles, onToastSuccessMod, onToastSuccessDel } = props
   
   const { user } = useAuth()
 
@@ -26,8 +26,8 @@ export function VisitaProvDetalles(props) {
       try {
         await axios.delete(`/api/visitaprovedores/visitaprovedores?id=${visitaprov.id}`)
         onReload()
-        onToastSuccessVisitaprovDel()
-        onOpenCloseDetalles()
+        onToastSuccessDel()
+        onCloseDetalles()
       } catch (error) {
         console.error('Error al eliminar el visita proveedor:', error)
       }
@@ -38,7 +38,7 @@ export function VisitaProvDetalles(props) {
 
   return (
     <>
-      <IconClose onOpenClose={onOpenCloseDetalles} />
+      <IconClose onOpenClose={onCloseDetalles} />
 
       <div className={styles.section}>
         <div className={styles.box1}>
@@ -94,7 +94,7 @@ export function VisitaProvDetalles(props) {
       </div>
 
       <BasicModal title='Editar visita proveedor' show={showEditVisitaprov} onClose={onOpenEditVisitaprov}>
-        <VisitaProvEditForm reload={reload} onReload={onReload} visitaprov={visitaprov} onOpenEditVisitaprov={onOpenEditVisitaprov} onToastSuccessVisitaprovMod={onToastSuccessVisitaprovMod} />
+        <VisitaProvEditForm reload={reload} onReload={onReload} visitaprov={visitaprov} onOpenEditVisitaprov={onOpenEditVisitaprov} onToastSuccessMod={onToastSuccessMod} />
       </BasicModal>
 
       <Confirm

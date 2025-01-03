@@ -4,7 +4,8 @@ import { useAuth } from '@/contexts/AuthContext'
 import { BasicLayout, BasicModal } from '@/layouts'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { ReporteForm, ReporteList } from '@/components/Reportes'
+import { ReporteForm, ReporteList, ReportesListSearch, SearchReporte } from '@/components/Reportes'
+import { FaSearch } from 'react-icons/fa'
 import styles from './reportes.module.css'
 
 
@@ -19,6 +20,12 @@ export default function Reportes() {
   const [openForm, setOpenForm] = useState(false)
 
   const onOpenCloseForm = () => setOpenForm((prevState) => !prevState)
+
+  const [search, setSearch] = useState(false)
+
+  const onOpenCloseSearch = () => setSearch((prevState) => !prevState)
+
+  const [resultados, setResultados] = useState([])
 
   const [reportes, setReportes] = useState(null)
 
@@ -76,13 +83,31 @@ export default function Reportes() {
 
         {toastSuccessDel && <ToastDelete contain='Eliminado exitosamente' onClose={() => setToastSuccessReportesDel(false)} />}
 
+        {!search ? (
+        ''
+      ) : (
+        <div className={styles.searchMain}>
+          <SearchReporte onResults={setResultados} reload={reload} onReload={onReload} onToastSuccessMod={onToastSuccessMod} onOpenCloseSearch={onOpenCloseSearch} />
+          {resultados.length > 0 && (
+            <ReportesListSearch visitas={resultados} reload={reload} onReload={onReload} />
+          )}
+        </div>
+      )}
+
+      {!search ? (
+        <div className={styles.iconSearchMain}>
+          <div className={styles.iconSearch} onClick={onOpenCloseSearch}>
+            <h1>Buscar reporte</h1>
+            <FaSearch />
+          </div>
+        </div>
+      ) : (
+        ''
+      )}
+
         <ReporteList reload={reload} onReload={onReload} reportes={reportes} onToastSuccessMod={onToastSuccessMod} onToastSuccessDel={onToastSuccessDel} />
 
-        {user.isadmin === 'Admin' ? (
-          <Add onOpenClose={onOpenCloseForm} />
-        ) : (
-          ''
-        )}
+        <Add onOpenClose={onOpenCloseForm} />
 
       </BasicLayout>
 

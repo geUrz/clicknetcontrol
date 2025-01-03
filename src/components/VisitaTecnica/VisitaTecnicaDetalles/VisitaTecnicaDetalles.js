@@ -1,8 +1,8 @@
-import { IconClose, Confirm, Loading, UploadImg } from '@/components/Layouts';
+import { IconClose, Confirm, UploadImg } from '@/components/Layouts';
 import { formatDate } from '@/helpers';
 import { BasicModal, ModalImg } from '@/layouts';
 import { FaCheck, FaEdit, FaImage, FaTimes, FaTrash } from 'react-icons/fa';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { VisitaTecnicaEditForm } from '../VisitaTecnicaEditForm/VisitaTecnicaEditForm';
 import axios from 'axios';
 import { Button, Form, FormField, FormGroup, Image, Input, Tab } from 'semantic-ui-react';
@@ -14,7 +14,7 @@ export function VisitaTecnicaDetalles(props) {
     reload,
     onReload,
     visitatecnica: initialVisitaTecnica,
-    onOpenCloseDetalles,
+    onCloseDetalles,
     onToastSuccessMod,
     onToastSuccessDel,
   } = props
@@ -72,7 +72,7 @@ export function VisitaTecnicaDetalles(props) {
         setVisitatecnica(null)
         onReload()
         onToastSuccessDel()
-        onOpenCloseDetalles()
+        onCloseDetalles()
       } catch (error) {
         console.error('Error al eliminar la visita tecnica:', error)
       }
@@ -167,11 +167,11 @@ export function VisitaTecnicaDetalles(props) {
                     <Image src={visitatecnica[imgKey]} onClick={() => openImg(visitatecnica[imgKey], imgKey)} />
                     <h1>{visitatecnica[`title${imageKeys1.indexOf(imgKey) + 1}`] || 'Sin título'}</h1>
                     
-                    {user.isadmin === 'Admin' || user.isadmin === 'Técnico' ?
                       <div className={styles.editTitle} onClick={() => handleEditTitle(visitatecnica[`title${imageKeys1.indexOf(imgKey) + 1}`], `title${imageKeys1.indexOf(imgKey) + 1}`)}>
-                      <FaEdit />
-                      </div> : <><div></div><div></div><div></div><div></div></>
-                    }
+                        {user.isadmin === 'Admin' || user.isadmin === 'Técnico' ?
+                          <FaEdit /> : null
+                        }
+                      </div>
 
                   </>
                 )}
@@ -194,12 +194,11 @@ export function VisitaTecnicaDetalles(props) {
               <>
                 <Image src={visitatecnica[imgKey]} onClick={() => openImg(visitatecnica[imgKey], imgKey)} />
                 <h1>{visitatecnica[`title${imageKeys2.indexOf(imgKey) + 1}`] || 'Sin título'}</h1>
-                
-                {user.isadmin === 'Admin' || user.isadmin === 'Técnico' ?
-                  <div className={styles.editTitle} onClick={() => handleEditTitle(visitatecnica[`title${imageKeys2.indexOf(imgKey) + 1}`], `title${imageKeys2.indexOf(imgKey) + 1}`)}>
-                  <FaEdit />
-                  </div> : <><div></div><div></div><div></div><div></div></>
-                }
+                <div className={styles.editTitle} onClick={() => handleEditTitle(visitatecnica[`title${imageKeys2.indexOf(imgKey) + 1}`], `title${imageKeys2.indexOf(imgKey) + 1}`)}>
+                  {user.isadmin === 'Admin' || user.isadmin === 'Técnico' ?
+                    <FaEdit /> : null
+                  }
+                </div>
 
               </>
             )}
@@ -213,7 +212,7 @@ export function VisitaTecnicaDetalles(props) {
 
   return (
     <>
-      <IconClose onOpenClose={onOpenCloseDetalles} />
+      <IconClose onOpenClose={onCloseDetalles} />
       <div className={styles.section}>
         <div className={styles.box1}>
           <div className={styles.box1_1}>

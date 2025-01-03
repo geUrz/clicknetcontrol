@@ -5,9 +5,7 @@ import { BasicModal } from '@/layouts'
 import { ReporteDetalles } from '../ReporteDetalles'
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
-import { Form, FormField, FormGroup, Label } from 'semantic-ui-react'
-import { formatDate, formatDateInc } from '@/helpers'
-import DatePicker from 'react-datepicker'
+import { formatDate } from '@/helpers'
 import 'react-datepicker/dist/react-datepicker.css'
 import styles from './ReporteList.module.css'
 
@@ -18,7 +16,7 @@ export function ReporteList(props) {
   const { loading } = useAuth()
 
   const [showDetalles, setShowDetalles] = useState(false)
-  const [reporteSeleccionada, setReporteSeleccionada] = useState(null)
+  const [reporteSeleccionado, setReporteSeleccionada] = useState(null)
   const [showLoading, setShowLoading] = useState(true)
 
   const onOpenDetalles = (reporte) => {
@@ -30,15 +28,6 @@ export function ReporteList(props) {
     setReporteSeleccionada(null)
     setShowDetalles(false)
   }
-
-  const [filterEstado, setFilterEstado] = useState('')
-  const [filterFecha, setFilterFecha] = useState(null)
-
-  const filteredReporte = (reportes || []).filter((reporte) => {
-    return (
-      (filterFecha === null || reporte.date === formatDateInc(filterFecha))
-    )
-  })
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -56,37 +45,14 @@ export function ReporteList(props) {
 
     <>
 
-      <div className={styles.filters}>
-
-        <h1>Buscar por:</h1>
-
-        <Form>
-          <FormGroup>
-            <Label className={styles.label}>Fecha</Label>
-            <FormField>
-              <DatePicker
-                selected={filterFecha}
-                onChange={(date) => setFilterFecha(date)}
-                dateFormat="dd/MM/yyyy"
-                placeholderText="dd/mm/aaaa"
-                locale="es"
-                isClearable
-                showPopperArrow={false}
-                popperPlacement="bottom"
-              />
-            </FormField>
-          </FormGroup>
-        </Form>
-      </div>
-
       {showLoading ? (
         <Loading size={45} loading={1} />
       ) : (
-        size(filteredReporte) === 0 ? (
+        size(reportes) === 0 ? (
           <ListEmpty />
         ) : (
           <div className={styles.main}>
-            {map(filteredReporte, (reporte) => (
+            {map(reportes, (reporte) => (
                 <div key={reporte.id} className={styles.section} onClick={() => onOpenDetalles(reporte)}>
                   <div>
                     <div className={styles.column1}>
@@ -110,12 +76,12 @@ export function ReporteList(props) {
       )}
 
       <BasicModal title='detalles del reporte' show={showDetalles} onClose={onCloseDetalles}>
-        {reporteSeleccionada && (
+        {reporteSeleccionado && (
           <ReporteDetalles
             reload={reload}
             onReload={onReload}
-            reporte={reporteSeleccionada}
-            onOpenCloseDetalles={onCloseDetalles}
+            reporte={reporteSeleccionado}
+            onCloseDetalles={onCloseDetalles}
             onToastSuccessMod={onToastSuccessMod}
             onToastSuccessDel={onToastSuccessDel}
           />

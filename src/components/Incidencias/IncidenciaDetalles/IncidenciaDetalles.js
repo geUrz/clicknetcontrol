@@ -11,7 +11,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button, Form, FormField, FormGroup, Image, Input } from 'semantic-ui-react';
 
 export function IncidenciaDetalles(props) {
-  const { reload, onReload, incidencia: initialIncidencia, onOpenCloseDetalles, onToastSuccessIncidenciaMod, onToastSuccessIncidenciaDel } = props;
+  const { reload, onReload, incidencia: initialIncidencia, onCloseDetalles, onToastSuccessMod, onToastSuccessDel } = props;
 
   const { user } = useAuth()
   
@@ -39,9 +39,15 @@ export function IncidenciaDetalles(props) {
     setShowImg(true)
   }
 
-  const onShowSubirImg = (imgKey) => {
-    setSelectedImageKey(imgKey)
-    setShowSubirImg(true)
+  let onShowSubirImg = () => {}
+
+  if (user.isadmin === 'Admin' || incidencia.usuario_id === user.id) {
+
+    onShowSubirImg = (imgKey) => {
+      setSelectedImageKey(imgKey)
+      setShowSubirImg(true)
+    }
+
   }
 
   const onCloseSubirImg = () => {
@@ -59,8 +65,8 @@ export function IncidenciaDetalles(props) {
         await axios.delete(`/api/incidencias/incidencias?id=${incidencia.id}`)
         setIncidencia(null)
         onReload()
-        onToastSuccessIncidenciaDel()
-        onOpenCloseDetalles()
+        onToastSuccessDel()
+        onCloseDetalles()
       } catch (error) {
         console.error('Error al eliminar la incidencia:', error)
       }
@@ -115,9 +121,9 @@ export function IncidenciaDetalles(props) {
   
 
   const handleEditTitle = (title, key) => {
-    setCurrentTitle(title);
-    setCurrentTitleKey(key); // Guardamos la clave del título que se está editando
-    setShowEditTitleModal(true);
+    setCurrentTitle(title)
+    setCurrentTitleKey(key)
+    setShowEditTitleModal(true)
   };
 
   const handleSaveTitle = async () => {
@@ -144,7 +150,7 @@ export function IncidenciaDetalles(props) {
 
   return (
     <>
-      <IconClose onOpenClose={onOpenCloseDetalles} />
+      <IconClose onOpenClose={onCloseDetalles} />
 
       <div className={styles.section}>
         <div className={styles.box1}>
@@ -190,7 +196,9 @@ export function IncidenciaDetalles(props) {
                     <Image src={incidencia[imgKey]} onClick={() => openImg(incidencia[imgKey], imgKey)} />
                     <h1>{incidencia[`title${imageKeys.indexOf(imgKey) + 1}`] || 'Sin título'}</h1>
                     <div className={styles.editTitle} onClick={() => handleEditTitle(incidencia[`title${imageKeys.indexOf(imgKey) + 1}`], `title${imageKeys.indexOf(imgKey) + 1}`)}>
-                      <FaEdit />
+                      {incidencia.usuario_id === user.id || user.isadmin === 'Admin' ?
+                        <FaEdit /> : null
+                      }
                     </div>
                   </>
                 )}
@@ -223,7 +231,7 @@ export function IncidenciaDetalles(props) {
       </div>
 
       <BasicModal title='Editar incidencia' show={showEditIncidencia} onClose={onOpenEditIncidencia}>
-        <IncidenciaEditForm reload={reload} onReload={onReload} incidencia={incidencia} onOpenEditIncidencia={onOpenEditIncidencia} onToastSuccessIncidenciaMod={onToastSuccessIncidenciaMod} />
+        <IncidenciaEditForm reload={reload} onReload={onReload} incidencia={incidencia} onOpenEditIncidencia={onOpenEditIncidencia} onToastSuccessMod={onToastSuccessMod} />
       </BasicModal>
 
       <BasicModal title='Subir imagen' show={showSubirImg} onClose={onCloseSubirImg}>

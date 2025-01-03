@@ -5,16 +5,14 @@ import { BasicModal } from '@/layouts'
 import { VisitaProvDetalles } from '../VisitaProvDetalles'
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
-import { Dropdown, Form, FormField, FormGroup, Label } from 'semantic-ui-react'
-import { formatDateInc, formatDateVT } from '@/helpers'
+import { formatDateVT } from '@/helpers'
 import { getStatusClassVisita } from '@/helpers/getStatusClass/getStatusClass'
-import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import styles from './VisitaProvsList.module.css'
 
 export function VisitaProvsList(props) {
 
-  const { reload, onReload, visitaprovs, onToastSuccessVisitaprovMod, onToastSuccessVisitaprovDel } = props
+  const { reload, onReload, visitaprovs, onToastSuccessMod, onToastSuccessDel } = props
 
   const { loading } = useAuth()
   
@@ -32,23 +30,6 @@ export function VisitaProvsList(props) {
     setShowDetalles(false)
   }
 
-  const [filterEstado, setFilterEstado] = useState('')
-  const [filterFecha, setFilterFecha] = useState(null)
-
-  const filteredVisitaprov = (visitaprovs || []).filter((visitaprov) => {
-    return (
-      (filterEstado === '' || filterEstado === 'Todas' || visitaprov.estado === filterEstado) &&
-      (filterFecha === null || formatDateInc(visitaprov.createdAt) === formatDateInc(filterFecha))
-    )
-  })
-
-  const opcionesEstado = [
-    { key: 1, text: 'Todas', value: 'Todas' },
-    { key: 2, text: 'Sin ingresar', value: 'Sin ingresar' },
-    { key: 3, text: 'Ingresado', value: 'Ingresado' },
-    { key: 4, text: 'Retirado', value: 'Retirado' }
-  ]
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowLoading(false)
@@ -65,45 +46,14 @@ export function VisitaProvsList(props) {
 
     <>
 
-      <div className={styles.filters}>
-
-        <h1>Buscar por:</h1>
-
-        <Form>
-          <FormGroup>
-            <Dropdown
-              placeholder='Todas'
-              fluid
-              selection
-              options={opcionesEstado}
-              value={filterEstado}
-              onChange={(e, data) => setFilterEstado(data.value)}
-            />
-            <Label className={styles.label}>Fecha</Label>
-            <FormField>
-              <DatePicker
-                selected={filterFecha}
-                onChange={(date) => setFilterFecha(date)}
-                dateFormat="dd/MM/yyyy"
-                placeholderText="dd/mm/aaaa"
-                locale="es"
-                isClearable
-                showPopperArrow={false}
-                popperPlacement="bottom"
-              />
-            </FormField>
-          </FormGroup>
-        </Form>
-      </div>
-
       {showLoading ? (
         <Loading size={45} loading={1} />
       ) : (
-        size(filteredVisitaprov) === 0 ? (
+        size(visitaprovs) === 0 ? (
           <ListEmpty />
         ) : (
           <div className={styles.main}>
-            {map(filteredVisitaprov, (visitaprov) => {
+            {map(visitaprovs, (visitaprov) => {
               const statusClass = getStatusClassVisita(visitaprov.estado)
 
               return (
@@ -140,9 +90,9 @@ export function VisitaProvsList(props) {
             reload={reload}
             onReload={onReload}
             visitaprov={visitaprovSeleccionada}
-            onOpenCloseDetalles={onCloseDetalles}
-            onToastSuccessVisitaprovMod={onToastSuccessVisitaprovMod}
-            onToastSuccessVisitaprovDel={onToastSuccessVisitaprovDel}
+            onCloseDetalles={onCloseDetalles}
+            onToastSuccessMod={onToastSuccessMod}
+            onToastSuccessDel={onToastSuccessDel}
           />
         )}
       </BasicModal>

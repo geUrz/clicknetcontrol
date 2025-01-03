@@ -28,8 +28,9 @@ export function SearchCotizacion(props) {
       setError('')
 
       try {
-        const response = await axios.get(`/api/cotizaciones/cotizaciones?search=${query}&residencial_id=${user.residencial_id}`)
-        setCotizaciones(response.data)
+        const res = await axios.get(`/api/cotizaciones/cotizaciones?search=${query}`)
+        const filteredCotizaciones = res.data.filter(cotizacion => cotizacion.residencial_id === user.residencial_id)
+        setCotizaciones(filteredCotizaciones)
       } catch (err) {
         setError('No se encontraron cotizaciones')
         setCotizaciones([])

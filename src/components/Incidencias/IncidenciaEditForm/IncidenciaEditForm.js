@@ -7,7 +7,7 @@ import { useAuth } from '@/contexts/AuthContext'
 
 export function IncidenciaEditForm(props) {
 
-  const { reload, onReload, incidencia, onOpenEditIncidencia, onToastSuccessIncidenciaMod } = props
+  const { reload, onReload, incidencia, onOpenEditIncidencia, onToastSuccessMod } = props
 
   const { user } = useAuth()
 
@@ -63,7 +63,7 @@ export function IncidenciaEditForm(props) {
       await axios.put(`/api/incidencias/incidencias?id=${incidencia.id}`, formData)
       onReload()
       onOpenEditIncidencia()
-      onToastSuccessIncidenciaMod()
+      onToastSuccessMod()
     } catch (error) {
       console.error('Error actualizando la incidencia:', error)
     }
