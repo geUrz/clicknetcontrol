@@ -1,4 +1,4 @@
-import { formatDateCodigo } from "@/helpers"
+import { formatDateCodigo, formatDateInc } from "@/helpers"
 import connection from "@/libs/db"
 
 export default async function handler(req, res) {
@@ -29,8 +29,8 @@ export default async function handler(req, res) {
       // Verificar el estado de la visita
       const visita = rows[0]
       //const todayFormat = new Date().toLocaleDateString().split('T')[0]
-      const todayFormat = new Date().toISOString().split('T')[0]
-      const today = formatDateCodigo(todayFormat)
+      const today = new Date().toLocaleDateString('en-CA')
+      //const today = formatDateCodigo(todayFormat)
       
       const visitaDate = visita.date
       const fromDate = visita.fromDate
