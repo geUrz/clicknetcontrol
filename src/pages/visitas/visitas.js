@@ -4,8 +4,9 @@ import axios from 'axios'
 import ProtectedRoute from '@/components/Layouts/ProtectedRoute/ProtectedRoute'
 import { Add, Loading, ToastDelete, ToastSuccess } from '@/components/Layouts'
 import { useAuth } from '@/contexts/AuthContext'
-import { VisitasList, VisitaForm } from '@/components/Visitas'
+import { VisitasList, VisitaForm, SearchVisitas, VisitasListSearch } from '@/components/Visitas'
 import styles from './visitas.module.css'
+import { FaSearch } from 'react-icons/fa'
 
 export default function Visitas() {
 
@@ -19,43 +20,51 @@ export default function Visitas() {
 
   const onOpenCloseForm = () => setOpenForm((prevState) => !prevState)
 
+  const [search, setSearch] = useState(false)
+  
+  const onOpenCloseSearch = () => setSearch((prevState) => !prevState)
+  
+  const [resultados, setResultados] = useState([])
+
   const [visitas, setVisitas] = useState(null)
 
   useEffect(() => {
-    if (!user || !user.id) return
+    
+    if (!user || !user.id || !user.residencial_id) return
   
     (async () => {
       try {
         const res = await axios.get(`/api/visitas/visitas?usuario_id=${user.id}`)
-        setVisitas(res.data)
+        const filteredVisitas = res.data.filter(visita => visita.residencial_id === user.residencial_id)
+        setVisitas(filteredVisitas)
       } catch (error) {
         console.error(error)
       }
     })()
   }, [user, reload])
 
-  const [toastSuccessVisita, setToastSuccessVisita] = useState(false)
-  const [toastSuccessVisitaMod, setToastSuccessVisitaMod] = useState(false)
-  const [toastSuccessVisitaDel, setToastSuccessVisitaDel] = useState(false)
+  const [toastSuccess, setToastSuccess] = useState(false)
+  const [toastSuccessMod, setToastSuccessMod] = useState(false)
+  const [toastSuccessDel, setToastSuccessDel] = useState(false)
 
-  const onToastSuccessVisita = () => {
-    setToastSuccessVisita(true)
+  const onToastSuccess = () => {
+    setToastSuccess(true)
     setTimeout(() => {
-      setToastSuccessVisita(false)
+      setToastSuccess(false)
     }, 3000)
   }
 
-  const onToastSuccessVisitaMod = () => {
-    setToastSuccessVisitaMod(true)
+  const onToastSuccessMod = () => {
+    setToastSuccessMod(true)
     setTimeout(() => {
-      setToastSuccessVisitaMod(false)
+      setToastSuccessMod(false)
     }, 3000)
   }
 
-  const onToastSuccessVisitaDel = () => {
-    setToastSuccessVisitaDel(true)
+  const onToastSuccessDel = () => {
+    setToastSuccessDel(true)
     setTimeout(() => {
-      setToastSuccessVisitaDel(false)
+      setToastSuccessDel(false)
     }, 3000)
   }
 
@@ -69,13 +78,35 @@ export default function Visitas() {
 
       <BasicLayout title='Visitas' relative onReload={onReload}>
 
-        {toastSuccessVisita && <ToastSuccess contain='Creada exitosamente' onClose={() => setToastSuccessVisita(false)} />}
+        {toastSuccess && <ToastSuccess contain='Creada exitosamente' onClose={() => setToastSuccess(false)} />}
 
-        {toastSuccessVisitaMod && <ToastSuccess contain='Modificada exitosamente' onClose={() => setToastSuccessVisitaMod(false)} />}
+        {toastSuccessMod && <ToastSuccess contain='Modificada exitosamente' onClose={() => setToastSuccessMod(false)} />}
 
-        {toastSuccessVisitaDel && <ToastDelete contain='Eliminada exitosamente' onClose={() => setToastSuccessVisitaDel(false)} />}
+        {toastSuccessDel && <ToastDelete contain='Eliminada exitosamente' onClose={() => setToastSuccessDel(false)} />}
 
-        <VisitasList reload={reload} onReload={onReload} visitas={visitas} onToastSuccessVisitaMod={onToastSuccessVisitaMod} onToastSuccessVisitaDel={onToastSuccessVisitaDel} />
+        {!search ? (
+        ''
+      ) : (
+        <div className={styles.searchMain}>
+          <SearchVisitas user={user} onResults={setResultados} reload={reload} onReload={onReload} onToastSuccessMod={onToastSuccessMod} onOpenCloseSearch={onOpenCloseSearch} />
+          {resultados.length > 0 && (
+            <VisitasListSearch visitas={resultados} reload={reload} onReload={onReload} />
+          )}
+        </div>
+      )}
+
+      {!search ? (
+        <div className={styles.iconSearchMain}>
+          <div className={styles.iconSearch} onClick={onOpenCloseSearch}>
+            <h1>Buscar visita</h1>
+            <FaSearch />
+          </div>
+        </div>
+      ) : (
+        ''
+      )}
+
+        <VisitasList reload={reload} onReload={onReload} user={user} loading={loading} visitas={visitas} onToastSuccessMod={onToastSuccessMod} onToastSuccessDel={onToastSuccessDel} />
 
 
         <Add onOpenClose={onOpenCloseForm} />
@@ -83,7 +114,7 @@ export default function Visitas() {
       </BasicLayout>
 
       <BasicModal title='crear visita' show={openForm} onClose={onOpenCloseForm}>
-        <VisitaForm reload={reload} onReload={onReload} onOpenCloseForm={onOpenCloseForm} onToastSuccessVisita={onToastSuccessVisita} />
+        <VisitaForm reload={reload} onReload={onReload} user={user} onOpenCloseForm={onOpenCloseForm} onToastSuccess={onToastSuccess} />
       </BasicModal>
 
     </ProtectedRoute>

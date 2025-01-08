@@ -9,7 +9,7 @@
   padding-left: 5px !important;
   width: 300px !important;
   font-size: 12.5px !important;
-  color: var(--clrGR0000) !important;
+  color: black !important;
 }
 
 .ui.form textarea{
@@ -24,11 +24,11 @@
   padding-left: 5px !important;
   width: 300px !important;
   font-size: 12.5px;
-  color: grey !important;
+  color: black !important;
 } 
 
 .ui.form option{
-  color: grey !important;
+  color: black !important;
 }
 
 .fields{

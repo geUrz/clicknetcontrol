@@ -37,6 +37,10 @@
   align-items: center;
 }
 
+.box1_1 div, .box1_2 div{
+  margin: 5px 0;
+}
+
 .box1_1{
   width: 50%;
   display: flex;

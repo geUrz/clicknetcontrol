@@ -112,9 +112,12 @@ export function OrdenServicioPDF(props) {
       bodyStyles: { fontSize: `${font3}` },
       alternateRowStyles: { fillColor: [255, 255, 255] },
       columnStyles: {
-        cellWidth: 100,
-        cellPadding: 2.5,
-        valign: 'middle'
+        0: {
+          halign: 'left', 
+          cellWidth: 'auto',
+          cellPadding: 2.5,
+          valign: 'middle'
+        }
       },
 
       margin: { top: 0, left: marginMain, bottom: 0, right: marginMain },
@@ -180,8 +183,8 @@ export function OrdenServicioPDF(props) {
 
     if (toggle) {
 
-      const imgWidth = 40
-      const imgHeight = 60
+      const imgWidth = 35
+      const imgHeight = 70
       const spaceBetweenImages = 45
       const imagesPerRow = 4;
 
@@ -213,7 +216,7 @@ export function OrdenServicioPDF(props) {
         { img: visitatecnica.img10, title: visitatecnica.title10 }
       ]
 
-      let firstRowTopMargin = 28
+      let firstRowTopMargin = 26
       let posY = firstRowTopMargin
       let posX = calculateInitialPosX(doc.internal.pageSize.width)
 
@@ -232,7 +235,7 @@ export function OrdenServicioPDF(props) {
 
         if ((index + 1) % imagesPerRow === 0) {
           posX = calculateInitialPosX(doc.internal.pageSize.width)
-          posY += 80
+          posY += 88
         }
       })
 
@@ -277,7 +280,7 @@ export function OrdenServicioPDF(props) {
 
         if ((index + 1) % imagesPerRow === 0) {
           posX = calculateInitialPosX(doc.internal.pageSize.width)
-          posY += 80
+          posY += 88
         }
       })
 

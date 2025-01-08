@@ -1,10 +1,7 @@
 import { IconClose } from '@/components/Layouts/IconClose/IconClose'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import { Button, Dropdown, Form, FormField, FormGroup, Input, Label, Message, TextArea } from 'semantic-ui-react'
-import { BasicModal } from '@/layouts'
-import { FaPlus } from 'react-icons/fa'
-import { ToastSuccess } from '@/components/Layouts'
+import { Button, Form, FormField, FormGroup, Input, Label, Message } from 'semantic-ui-react'
 import 'react-datepicker/dist/react-datepicker.css'
 import styles from './ReciboEditForm.module.css'
 

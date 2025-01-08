@@ -158,21 +158,22 @@ export function VisitaTecnicaDetalles(props) {
       render: () => (
         <Tab.Pane>
           <div className={styles.tabContent}>
-          {imageKeys1.map(imgKey => (
+            {imageKeys1.map((imgKey, index) => (
               <div key={imgKey}>
                 {visitatecnica[imgKey] === null ? (
                   <FaImage onClick={() => onShowSubirImg(imgKey)} />
                 ) : (
                   <>
                     <Image src={visitatecnica[imgKey]} onClick={() => openImg(visitatecnica[imgKey], imgKey)} />
-                    <h1>{visitatecnica[`title${imageKeys1.indexOf(imgKey) + 1}`] || 'Sin título'}</h1>
-                    
-                      <div className={styles.editTitle} onClick={() => handleEditTitle(visitatecnica[`title${imageKeys1.indexOf(imgKey) + 1}`], `title${imageKeys1.indexOf(imgKey) + 1}`)}>
-                        {user.isadmin === 'Admin' || user.isadmin === 'Técnico' ?
-                          <FaEdit /> : null
-                        }
-                      </div>
-
+                    <h1>{visitatecnica[`title${index + 1}`] || 'Sin título'}</h1>
+                    <div
+                      className={styles.editTitle}
+                      onClick={() =>
+                        handleEditTitle(visitatecnica[`title${index + 1}`], `title${index + 1}`)
+                      }
+                    >
+                      <FaEdit />
+                    </div>
                   </>
                 )}
               </div>
@@ -186,29 +187,31 @@ export function VisitaTecnicaDetalles(props) {
       render: () => (
         <Tab.Pane>
           <div className={styles.tabContent}>
-          {imageKeys2.map(imgKey => (
-            <div key={imgKey}>
-            {visitatecnica[imgKey] === null ? (
-              <FaImage onClick={() => onShowSubirImg(imgKey)} />
-            ) : (
-              <>
-                <Image src={visitatecnica[imgKey]} onClick={() => openImg(visitatecnica[imgKey], imgKey)} />
-                <h1>{visitatecnica[`title${imageKeys2.indexOf(imgKey) + 1}`] || 'Sin título'}</h1>
-                <div className={styles.editTitle} onClick={() => handleEditTitle(visitatecnica[`title${imageKeys2.indexOf(imgKey) + 1}`], `title${imageKeys2.indexOf(imgKey) + 1}`)}>
-                  {user.isadmin === 'Admin' || user.isadmin === 'Técnico' ?
-                    <FaEdit /> : null
-                  }
-                </div>
-
-              </>
-            )}
-          </div>  
-          ))}
+            {imageKeys2.map((imgKey, index) => (
+              <div key={imgKey}>
+                {visitatecnica[imgKey] === null ? (
+                  <FaImage onClick={() => onShowSubirImg(imgKey)} />
+                ) : (
+                  <>
+                    <Image src={visitatecnica[imgKey]} onClick={() => openImg(visitatecnica[imgKey], imgKey)} />
+                    <h1>{visitatecnica[`title${index + 11}`] || 'Sin título'}</h1> {/* Usar el índice correctamente */}
+                    <div
+                      className={styles.editTitle}
+                      onClick={() =>
+                        handleEditTitle(visitatecnica[`title${index + 11}`], `title${index + 11}`)
+                      }
+                    >
+                      <FaEdit />
+                    </div>
+                  </>
+                )}
+              </div>
+            ))}
           </div>
         </Tab.Pane>
       ),
     },
-  ];
+  ]
 
   return (
     <>

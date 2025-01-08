@@ -8,19 +8,18 @@ import 'react-datepicker/dist/react-datepicker.css';
 import styles from './VisitaForm.module.css';
 
 export function VisitaForm(props) {
-  const { user } = useAuth();
   
-  const [visita, setVisita] = useState('');
-  const [tipovisita, setTipovisita] = useState('');
-  const [tipoacceso, setTipoacceso] = useState('');
-  const [date, setDate] = useState(null);
-  const [fromDate, setFromDate] = useState(null);
-  const [toDate, setToDate] = useState(null);
-  const [hora, setHora] = useState('');
-  const [diasSeleccionados, setDiasSeleccionados] = useState([]);
+  const [visita, setVisita] = useState('')
+  const [tipovisita, setTipovisita] = useState('')
+  const [tipoacceso, setTipoacceso] = useState('')
+  const [date, setDate] = useState(null)
+  const [fromDate, setFromDate] = useState(null)
+  const [toDate, setToDate] = useState(null)
+  const [hora, setHora] = useState('')
+  const [diasSeleccionados, setDiasSeleccionados] = useState([])
   
-  const { onReload, onOpenCloseForm, onToastSuccessVisita } = props;
-  const [errors, setErrors] = useState({});
+  const { user, reload, onReload, onOpenCloseForm, onToastSuccessVisita } = props;
+  const [errors, setErrors] = useState({})
   
   const diasOrdenados = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
@@ -46,22 +45,22 @@ export function VisitaForm(props) {
       if (!date) newErrors.date = 'El campo es requerido';
     }
 
-    setErrors(newErrors);
+    setErrors(newErrors)
     return Object.keys(newErrors).length === 0;
   };
 
   const handleVisitaChange = (e) => {
-    setVisita(e.target.value);
+    setVisita(e.target.value)
   };
 
   const handleDiaChange = (dia) => {
     setDiasSeleccionados((prev) => 
       prev.includes(dia) ? prev.filter((d) => d !== dia) : [...prev, dia]
-    );
+    )
   };
 
   const crearVisita = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     if (!validarForm()) return;
 
     const estado = 'Sin ingresar';
@@ -71,7 +70,7 @@ export function VisitaForm(props) {
 
     const diasOrdenadosSeleccionados = diasSeleccionados.sort((a, b) => 
       diasOrdenados.indexOf(a) - diasOrdenados.indexOf(b)
-    );
+    )
 
     try {
       await axios.post('/api/visitas/visitas', {
@@ -85,23 +84,24 @@ export function VisitaForm(props) {
         hora,
         estado,
         dias: tipoacceso === 'frecuente' ? diasOrdenadosSeleccionados.join(', ') : null,
-      });
+        residencial_id: user.residencial_id
+      })
 
       // Reiniciar estado del formulario
-      setVisita('');
-      setTipovisita('');
-      setTipoacceso('');
-      setDate(null);
-      setFromDate(null);
-      setToDate(null);
-      setHora('');
-      setDiasSeleccionados([]);
+      setVisita('')
+      setTipovisita('')
+      setTipoacceso('')
+      setDate(null)
+      setFromDate(null)
+      setToDate(null)
+      setHora('')
+      setDiasSeleccionados([])
 
-      onReload();
-      onOpenCloseForm();
-      onToastSuccessVisita();
+      onReload()
+      onOpenCloseForm()
+      onToastSuccessVisita()
     } catch (error) {
-      console.error('Error al crear la visita:', error);
+      console.error('Error al crear la visita:', error)
     }
   };
 
@@ -234,5 +234,5 @@ export function VisitaForm(props) {
         </div>
       </div>
     </>
-  );
+  )
 }

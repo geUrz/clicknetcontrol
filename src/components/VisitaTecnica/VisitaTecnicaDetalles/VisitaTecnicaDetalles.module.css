@@ -93,8 +93,8 @@
 }
 
 .tabContent > div{
-  margin: 10px;
-  width: 115px;
+  margin: 15px 10px 10px 10px;
+  width: 118px;
   height: 140px;
   display: flex;
   flex-direction: column;
@@ -129,7 +129,7 @@
 }
 
 .editTitle{
-  margin-top: 0 !important;
+  margin-top: 35px !important;
 }
 
 .editTitle svg, .editTitle path{

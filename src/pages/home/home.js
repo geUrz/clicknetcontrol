@@ -83,7 +83,7 @@ export default function Home() {
       <BasicLayout title='Panel' onReload={onReload}>
         <div className={styles.main}>
 
-          {user.isactive === 1 ?
+          {user && user.isactive === 1 ?
             <>
 
               <div className={styles.section}>

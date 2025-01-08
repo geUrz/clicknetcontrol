@@ -53,7 +53,7 @@ export function IncidenciaDetalles(props) {
   const onCloseSubirImg = () => {
     setShowSubirImg(false); // Cierra el modal
     setSelectedImageKey(null); // Limpia la clave de la imagen seleccionada
-  };
+  }
 
 
   const [showConfirmDelImg, setShowConfirmDelImg] = useState(null)
@@ -99,7 +99,6 @@ export function IncidenciaDetalles(props) {
     }
   }
   
-
   const onShowConfirmDelImg = (imgKey) => {
     setImageToDelete(imgKey)
     setShowConfirmDelImg(true)
@@ -110,21 +109,20 @@ export function IncidenciaDetalles(props) {
     setShowSubirImg(false);
   }
 
-  const MAX_TITLE_LENGTH = 40
+  const MAX_TITLE_LENGTH = 60
 
   const handleTitleChange = (e) => {
     const newTitle = e.target.value || ''
     if (newTitle.length <= MAX_TITLE_LENGTH) {
       setCurrentTitle(newTitle)
     }
-  };
-  
+  }
 
   const handleEditTitle = (title, key) => {
     setCurrentTitle(title)
     setCurrentTitleKey(key)
     setShowEditTitleModal(true)
-  };
+  }
 
   const handleSaveTitle = async () => {
     try {
@@ -186,7 +184,7 @@ export function IncidenciaDetalles(props) {
 
         <div className={styles.evidencias}>
           <h1>Evidencias</h1>
-          <div className={styles.imgContent}>
+          <div className={styles.tabContent}>
             {imageKeys.map(imgKey => (
               <div key={imgKey}>
                 {incidencia[imgKey] === null ? (

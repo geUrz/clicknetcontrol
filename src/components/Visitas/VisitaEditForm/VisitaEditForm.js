@@ -2,7 +2,6 @@ import { IconClose } from '@/components/Layouts/IconClose/IconClose'
 import { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 import { Button, Checkbox, Dropdown, Form, FormField, FormGroup, Input, Label } from 'semantic-ui-react'
-import { useAuth } from '@/contexts/AuthContext'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { registerLocale } from 'react-datepicker'
@@ -13,9 +12,7 @@ registerLocale('es', es)
 
 export function VisitaEditForm(props) {
 
-  const { reload, onReload, visita, onOpenEditVisita, onToastSuccessVisitaMod } = props
-
-  const { user } = useAuth()
+  const { reload, onReload, visita, onOpenEditVisita, onToastSuccessMod } = props
 
   const diasOrdenados = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
 
@@ -107,7 +104,7 @@ export function VisitaEditForm(props) {
       })
       onReload()
       onOpenEditVisita()
-      onToastSuccessVisitaMod()
+      onToastSuccessMod()
     } catch (error) {
       console.error('Error actualizando la visita:', error)
     }

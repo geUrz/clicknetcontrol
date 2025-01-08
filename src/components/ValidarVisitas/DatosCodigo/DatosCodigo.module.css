@@ -36,7 +36,7 @@
   margin-top: 10px;
 }
 
-.datos div:nth-child(2) h2, .datos div:nth-child(2) h3{
+.datos_2 h2, .datos_2 h3{
   text-align: right;
 }
 

@@ -1,10 +1,10 @@
 .iconSearchMain{
-  padding: 0 10px; 
+  margin-top: 60px;
   width: 100%;
   height: auto;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
 }
 
 .iconSearch{

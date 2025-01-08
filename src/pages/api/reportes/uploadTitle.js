@@ -1,7 +1,7 @@
 import connection from "@/libs/db";
 
 export default async function handler(req, res) {
-    const { id, titleKey, titleValue } = req.body;
+    const { id, titleKey, titleValue } = req.body
 
     if (req.method === 'PUT') {
         if (!id || !titleKey) {
@@ -9,6 +9,7 @@ export default async function handler(req, res) {
         }
 
         try {
+            console.log(`Actualizando columna: ${titleKey}, valor: ${titleValue}, id: ${id}`)
             const [result] = await connection.query(
                 `UPDATE reportes 
                 SET ?? = ? 
@@ -22,6 +23,7 @@ export default async function handler(req, res) {
 
             res.status(200).json({ message: 'Título actualizado correctamente' });
         } catch (error) {
+            console.error(error)
             res.status(500).json({ error: error.message });
         }
     } else {

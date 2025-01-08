@@ -5,7 +5,11 @@ import { Button, Dropdown, Form, FormField, FormGroup, Input, Label, Message, Te
 import { useAuth } from '@/contexts/AuthContext'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+import { registerLocale } from 'react-datepicker'
+import es from 'date-fns/locale/es'
 import styles from './ReporteEditForm.module.css'
+
+registerLocale('es', es)
 
 export function ReporteEditForm(props) {
 

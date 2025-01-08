@@ -6,7 +6,11 @@ import { IconClose } from '@/components/Layouts/IconClose/IconClose'
 import { genRepId } from '@/helpers'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+import { registerLocale } from 'react-datepicker'
+import es from 'date-fns/locale/es'
 import styles from './ReporteForm.module.css'
+
+registerLocale('es', es)
 
 export function ReporteForm(props) {
 

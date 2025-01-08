@@ -12,7 +12,7 @@ export function BottomMenu() {
     <div className={styles.main}>
       <div className={styles.section}>
 
-        {user.isactive === 1 ?
+        {user && user.isactive === 1 ?
           <>
             <Link href='/' className={styles.tab}>
               <div>

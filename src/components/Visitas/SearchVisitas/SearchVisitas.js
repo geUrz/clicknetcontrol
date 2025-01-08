@@ -7,7 +7,7 @@ import styles from './SearchVisitas.module.css';
 
 export function SearchVisitas(props) {
 
-  const {reload, onReload, onResults, onOpenCloseSearch, onToastSuccessVisitaMod} = props
+  const {user, reload, onReload, onResults, onOpenCloseSearch, onToastSuccessMod} = props
 
   const [query, setQuery] = useState('')
   const [loading, setLoading] = useState(false)
@@ -25,8 +25,9 @@ export function SearchVisitas(props) {
       setError('')
 
       try {
-        const response = await axios.get(`/api/visitas/visitas?search=${query}`)
-        setVisitas(response.data)
+        const res = await axios.get(`/api/visitas/visitas?search=${query}`)
+        const filteredVisitas = res.data.filter(visita => visita.residencial_id === user.residencial_id)
+        setVisitas(filteredVisitas)
       } catch (err) {
         setError('No se encontraron visitas')
         setVisitas([])
@@ -59,7 +60,7 @@ export function SearchVisitas(props) {
         {error && <p>{error}</p>}
         {visitas.length > 0 && (
           <div className={styles.resultsContainer}>
-            <VisitasListSearch visitas={visitas} reload={reload} onReload={onReload} onToastSuccessVisitaMod={onToastSuccessVisitaMod} onOpenCloseSearch={onOpenCloseSearch} />
+            <VisitasListSearch visitas={visitas} reload={reload} onReload={onReload} onToastSuccessMod={onToastSuccessMod} onOpenCloseSearch={onOpenCloseSearch} />
           </div>
         )}
       </div>

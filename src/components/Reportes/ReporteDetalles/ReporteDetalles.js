@@ -32,12 +32,12 @@ export function ReporteDetalles(props) {
   const [firmaCli, setFirmaCli] = useState(reporte.firmaCli || null)
   const [showConfirmFirmaTec, setShowConfirmFirmaTec] = useState(false)
   const [showConfirmFirmaCli, setShowConfirmFirmaCli] = useState(false)
-  
+
   const [togglePagina2, setTogglePagina2] = useState(() => {
     const savedState = localStorage.getItem('togglePagina2');
     return savedState !== null ? JSON.parse(savedState) : false;
   })
-  
+
   const onTogglePagina2 = () => {
     setTogglePagina2((prevState) => {
       const newState = !prevState;
@@ -51,8 +51,8 @@ export function ReporteDetalles(props) {
     const savedState = localStorage.getItem('toggleEvi');
     return savedState !== null ? JSON.parse(savedState) : false;
   })
-  
-  const onToggleEvi= () => {
+
+  const onToggleEvi = () => {
     setToggleEvi((prevState) => {
       const newState = !prevState;
 
@@ -158,7 +158,7 @@ export function ReporteDetalles(props) {
     setShowSubirImg(false)
   }
 
-  const MAX_TITLE_LENGTH = 40
+  const MAX_TITLE_LENGTH = 60
 
   const handleTitleChange = (e) => {
     const newTitle = e.target.value || ''
@@ -324,15 +324,20 @@ export function ReporteDetalles(props) {
       render: () => (
         <Tab.Pane>
           <div className={styles.tabContent}>
-            {imageKeys1.map(imgKey => (
+            {imageKeys1.map((imgKey, index) => (
               <div key={imgKey}>
                 {reporte[imgKey] === null ? (
                   <FaImage onClick={() => onShowSubirImg(imgKey)} />
                 ) : (
                   <>
                     <Image src={reporte[imgKey]} onClick={() => openImg(reporte[imgKey], imgKey)} />
-                    <h1>{reporte[`title${imageKeys1.indexOf(imgKey) + 1}`] || 'Sin título'}</h1>
-                    <div className={styles.editTitle} onClick={() => handleEditTitle(reporte[`title${imageKeys1.indexOf(imgKey) + 1}`], `title${imageKeys1.indexOf(imgKey) + 1}`)}>
+                    <h1>{reporte[`title${index + 1}`] || 'Sin título'}</h1>
+                    <div
+                      className={styles.editTitle}
+                      onClick={() =>
+                        handleEditTitle(reporte[`title${index + 1}`], `title${index + 1}`)
+                      }
+                    >
                       <FaEdit />
                     </div>
                   </>
@@ -348,15 +353,20 @@ export function ReporteDetalles(props) {
       render: () => (
         <Tab.Pane>
           <div className={styles.tabContent}>
-            {imageKeys2.map(imgKey => (
+            {imageKeys2.map((imgKey, index) => (
               <div key={imgKey}>
                 {reporte[imgKey] === null ? (
                   <FaImage onClick={() => onShowSubirImg(imgKey)} />
                 ) : (
                   <>
                     <Image src={reporte[imgKey]} onClick={() => openImg(reporte[imgKey], imgKey)} />
-                    <h1>{reporte[`title${imageKeys2.indexOf(imgKey) + 1}`] || 'Sin título'}</h1>
-                    <div className={styles.editTitle} onClick={() => handleEditTitle(reporte[`title${imageKeys2.indexOf(imgKey) + 1}`], `title${imageKeys2.indexOf(imgKey) + 1}`)}>
+                    <h1>{reporte[`title${index + 11}`] || 'Sin título'}</h1> {/* Usar el índice correctamente */}
+                    <div
+                      className={styles.editTitle}
+                      onClick={() =>
+                        handleEditTitle(reporte[`title${index + 11}`], `title${index + 11}`)
+                      }
+                    >
                       <FaEdit />
                     </div>
                   </>
@@ -367,7 +377,7 @@ export function ReporteDetalles(props) {
         </Tab.Pane>
       ),
     },
-  ];
+  ]
 
   return (
     <>
@@ -413,7 +423,7 @@ export function ReporteDetalles(props) {
           <Form>
             <FormGroup widths='equal'>
               <FormField>
-                <TextArea 
+                <TextArea
                   value={page2}
                   onChange={handlePage2Change}
                 />
@@ -425,7 +435,7 @@ export function ReporteDetalles(props) {
             <Button secondary onClick={handleAddPage2}>
               {editPage2 ? 'Modificar' : 'Añadir'}
             </Button>
-          </Form> 
+          </Form>
           : null
         }
 
@@ -570,8 +580,8 @@ export function ReporteDetalles(props) {
           itemId={reporte.id}
           tipoFirma="firmatec"
           onOpenClose={() => {
-          onOpenCloseFirmaTec()
-          fetchFirmaTec()
+            onOpenCloseFirmaTec()
+            fetchFirmaTec()
           }}
         />
       </BasicModal>
@@ -584,8 +594,8 @@ export function ReporteDetalles(props) {
           itemId={reporte.id}
           tipoFirma="firmacli"
           onOpenClose={() => {
-          onOpenCloseFirmaCli()
-          fetchFirmaCli()
+            onOpenCloseFirmaCli()
+            fetchFirmaCli()
           }}
         />
       </BasicModal>
@@ -624,7 +634,7 @@ export function ReporteDetalles(props) {
         content="¿Estás seguro de eliminar la imagen?"
       />
 
-<Confirm
+      <Confirm
         open={showConfirmFirmaTec}
         onCancel={onOpenCloseConfirmFirmaTec}
         onConfirm={removeFirmaTec}

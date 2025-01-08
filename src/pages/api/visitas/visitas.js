@@ -34,6 +34,7 @@ export default async function handler(req, res) {
                         visitas.img2,
                         visitas.img3,
                         visitas.img4,
+                        visitas.residencial_id,
                         visitas.createdAt
                     FROM visitas
                     JOIN usuarios ON visitas.usuario_id = usuarios.id
@@ -48,8 +49,9 @@ export default async function handler(req, res) {
                     OR LOWER(visitas.fromDate) LIKE ? 
                     OR LOWER(visitas.toDate) LIKE ? 
                     OR LOWER(visitas.estado) LIKE ?
+                    OR LOWER(visitas.createdAt) LIKE ?
                     ORDER BY visitas.updatedAt DESC`, 
-                    [searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, searchQuery]
+                    [searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, searchQuery]
                 )
 
                 if (rows.length === 0) {
@@ -98,6 +100,7 @@ export default async function handler(req, res) {
                         visitas.img2,
                         visitas.img3,
                         visitas.img4,
+                        visitas.residencial_id,
                         visitas.createdAt
                     FROM visitas
                     JOIN usuarios ON visitas.usuario_id = usuarios.id
@@ -151,6 +154,7 @@ export default async function handler(req, res) {
                     visitas.img2,
                     visitas.img3,
                     visitas.img4,
+                    visitas.residencial_id,
                     visitas.createdAt
                 FROM visitas
                 JOIN usuarios ON visitas.usuario_id = usuarios.id
@@ -169,7 +173,7 @@ export default async function handler(req, res) {
         }
     } else if (req.method === 'POST') {
         try {
-            const { usuario_id, visita, tipovisita, tipoacceso, nota, date, fromDate, toDate, estado, dias, autorizo } = req.body;
+            const { usuario_id, visita, tipovisita, tipoacceso, nota, date, fromDate, toDate, estado, dias, autorizo, residencial_id } = req.body;
             if (!usuario_id || !visita || !tipovisita || !tipoacceso) {
                 return res.status(400).json({ error: 'Todos los datos son obligatorios' })
             }
@@ -177,8 +181,8 @@ export default async function handler(req, res) {
             const code = generateCode() // Genera el código
       
             const [result] = await connection.query(
-                'INSERT INTO visitas (usuario_id, visita, tipovisita, tipoacceso, codigo, nota, date, fromDate, toDate, estado, dias, autorizo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                [usuario_id, visita, tipovisita, tipoacceso, code, nota, date, fromDate, toDate, estado, tipoacceso === 'frecuente' ? dias : null, autorizo]
+                'INSERT INTO visitas (usuario_id, visita, tipovisita, tipoacceso, codigo, nota, date, fromDate, toDate, estado, dias, autorizo, residencial_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                [usuario_id, visita, tipovisita, tipoacceso, code, nota, date, fromDate, toDate, estado, tipoacceso === 'frecuente' ? dias : null, autorizo, residencial_id]
             )
       
             const qrCode = await QRCode.toDataURL(code)  // Genera el QR a partir del código

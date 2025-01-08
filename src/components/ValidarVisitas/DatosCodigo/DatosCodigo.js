@@ -23,8 +23,7 @@ export function DatosCodigo(props) {
 
   const [showConfirmDelImg, setShowConfirmDelImg] = useState(false)
   const [imageToDelete, setImageToDelete] = useState(null)
-
-  const [imgKeyToDelete, setImgKeyToDelete] = useState(null);
+  const [imgKeyToDelete, setImgKeyToDelete] = useState(null)
 
   const openImg = (imgUrl, imgKey) => {
     setSelectedImg(imgUrl)
@@ -35,12 +34,12 @@ export function DatosCodigo(props) {
   const onShowSubirImg = (imgKey) => {
     setSelectedImageKey(imgKey)
     setShowSubirImg(true)
-  };
+  }
 
   const onCloseSubirImg = () => {
     setShowSubirImg(false)
     setSelectedImageKey(null)
-  };
+  }
 
   const handleDeleteImage = async () => {
     try {
@@ -50,29 +49,28 @@ export function DatosCodigo(props) {
           id: visita.id,
           imageKey: imgKeyToDelete,
         },
-      });
+      })
 
       // Actualiza el estado de la visita después de eliminar la imagen
       setVisita((prevIncidencia) => ({
         ...prevIncidencia,
         [imgKeyToDelete]: null, // Se establece la clave de la imagen a null
-      }));
+      }))
 
-      onReload(); // Recarga los datos
-      setShowImg(false); // Cierra el modal de imagen
-      setShowConfirmDelImg(false); // Cierra el modal de confirmación
+      onReload() // Recarga los datos
+      setShowImg(false) // Cierra el modal de imagen
+      setShowConfirmDelImg(false) // Cierra el modal de confirmación
     } catch (error) {
-      console.error('Error al eliminar la imagen:', error);
+      console.error('Error al eliminar la imagen:', error)
     }
   }
 
   const onShowConfirmDelImg = (imgKey) => {
     setImageToDelete(imgKey)
     setShowConfirmDelImg(true)
-  };
+  }
 
   const handleImageUploadSuccess = (imageKey, imageUrl) => {
-    // Actualizamos la visita localmente con la nueva imagen cargada
     setVisita({ ...visita, [imageKey]: imageUrl })
     setShowSubirImg(false)
   }
@@ -89,23 +87,37 @@ export function DatosCodigo(props) {
         ) : (
           <>
             <div className={styles.datos}>
-              <div>
-                <h2>Residente</h2>
-                <h3>{visita.usuario_nombre}</h3>
-                <h2>Visita</h2>
-                <h3>{visita.visita}</h3>
-                <h2>Calle</h2>
-                <h3>{visita.usuario_calle}</h3>
-                <h2>Tipo de visita</h2>
-                <h3>{visita.tipovisita}</h3>
+              <div className={styles.datos_1}>
+                <div>
+                  <h2>Residente</h2>
+                  <h3>{visita.usuario_nombre}</h3>
+                </div>
+                <div>
+                  <h2>Visita</h2>
+                  <h3>{visita.visita}</h3>
+                </div>
+                <div>
+                  <h2>Calle</h2>
+                  <h3>{visita.usuario_calle}</h3>
+                </div>
+                <div>
+                  <h2>Tipo de visita</h2>
+                  <h3>{visita.tipovisita}</h3>
+                </div>
               </div>
-              <div>
-                <h2>Código</h2>
-                <h3>{visita.codigo}</h3>
-                <h2>Privada</h2>
-                <h3>{visita.usuario_privada}</h3>
-                <h2>Casa</h2>
-                <h3>#{visita.usuario_casa}</h3>
+              <div className={styles.datos_2}>
+                <div>
+                  <h2>Código</h2>
+                  <h3>{visita.codigo}</h3>
+                </div>
+                <div>
+                  <h2>Privada</h2>
+                  <h3>{visita.usuario_privada}</h3>
+                </div>
+                <div>
+                  <h2>Casa</h2>
+                  <h3>#{visita.usuario_casa}</h3>
+                </div>
                 <div className={styles.tipoAcc}>
                   <h2>Tipo de acceso</h2>
                   <h3>{visita.tipoacceso}</h3>

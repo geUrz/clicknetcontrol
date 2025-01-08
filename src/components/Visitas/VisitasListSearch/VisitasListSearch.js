@@ -1,6 +1,6 @@
 import { map, size } from 'lodash'
-import { ListEmpty } from '../ListEmpty'
-import { Loading } from '../Loading'
+import { ListEmpty } from '../../Layouts/ListEmpty'
+import { Loading } from '../../Layouts/Loading'
 import { FaUserFriends } from 'react-icons/fa'
 import { BasicModal } from '@/layouts'
 import { useState } from 'react'
@@ -9,7 +9,7 @@ import { VisitaDetalles } from '@/components/Visitas'
 
 export function VisitasListSearch(props) {
 
-  const { reload, onReload, visitas, onToastSuccessVisitaMod, onToastSuccessVisitaDel } = props
+  const { reload, onReload, visitas, onToastSuccessMod, onToastSuccessVisitaDel } = props
 
   const [showDetalles, setShowDetalles] = useState(false)
   const [visitaSeleccionada, setVisitaSeleccionada] = useState(null)
@@ -71,8 +71,8 @@ export function VisitasListSearch(props) {
             reload={reload}
             onReload={onReload}
             visita={visitaSeleccionada}
-            onOpenCloseDetalles={onCloseDetalles}
-            onToastSuccessVisitaMod={onToastSuccessVisitaMod}
+            onCloseDetalles={onCloseDetalles}
+            onToastSuccessMod={onToastSuccessMod}
             onToastSuccessVisitaDel={onToastSuccessVisitaDel}
           />
         )}
