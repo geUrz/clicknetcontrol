@@ -6,55 +6,55 @@ import { IconClose } from '../IconClose';
 
 export function UploadImg(props) {
   const { reload, onReload, idKey, itemId, onShowSubirImg, endpoint, onSuccess, selectedImageKey } = props;
-  const [fileName, setFileName] = useState('No se ha seleccionado ningún archivo');
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const acceptedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+  const [fileName, setFileName] = useState('No se ha seleccionado ningún archivo')
+  const [selectedImage, setSelectedImage] = useState(null)
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+  const acceptedTypes = ['image/jpg', 'image/jpeg', 'image/png', 'image/webp'];
 
   const handleImageSelect = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    setFileName(file.name);
+    setFileName(file.name)
 
     if (!acceptedTypes.includes(file.type)) {
-      setError('Tipo de archivo no permitido. Solo se aceptan imágenes jpg, png y webp.');
+      setError('Tipo de archivo no permitido. Solo se aceptan imágenes jpg, jpeg, png y webp.')
       return;
     }
 
-    setError('');
-    const imageUrl = URL.createObjectURL(file);
-    setSelectedImage(imageUrl);
-  };
+    setError('')
+    const imageUrl = URL.createObjectURL(file)
+    setSelectedImage(imageUrl)
+  }
 
   const handleImageUpload = async () => {
     const file = document.querySelector('input[type="file"]').files[0];
     if (!file) return;
   
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('id', itemId);
-    formData.append('imageKey', selectedImageKey);
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('id', itemId)
+    formData.append('imageKey', selectedImageKey)
   
     try {
-      setLoading(true);
+      setLoading(true)
   
       const res = await axios.post(`/api/${endpoint}/uploadImage`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      })
   
       const imageUrl = res.data.filePath;
-      onSuccess(selectedImageKey, imageUrl);
+      onSuccess(selectedImageKey, imageUrl)
       onReload()
-      onShowSubirImg(); // Cierra el modal
+      onShowSubirImg()
     } catch (error) {
-      setError('Error al subir la imagen. Inténtalo de nuevo.');
-      console.error('Error al subir la imagen:', error);
+      setError('Error al subir la imagen. Inténtalo de nuevo.')
+      console.error('Error al subir la imagen:', error)
     } finally {
-      setLoading(false); // Asegúrate de detener el loader siempre
+      setLoading(false)
     }
-  };
+  }
   
   
 
@@ -81,7 +81,7 @@ export function UploadImg(props) {
               />
               <span>{fileName}</span>
               {error && <Message negative>{error}</Message>}
-              <h1>Formatos: png, jpg y webp</h1>
+              <h1>Formatos: jpg, jpeg, png y webp</h1>
               <Button onClick={handleImageUpload} secondary disabled={!selectedImage || loading}>
                 {loading ? <Loader active inline size="small" /> : 'Subir Imagen'}
               </Button>
@@ -90,5 +90,5 @@ export function UploadImg(props) {
         </Form>
       </div>
     </>
-  );
+  )
 }
