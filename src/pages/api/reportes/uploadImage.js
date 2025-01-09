@@ -18,7 +18,7 @@ const upload = multer({
 
 export const config = {
   api: {
-    bodyParser: false, 
+    bodyParser: false,
   },
 }
 
@@ -40,14 +40,15 @@ const handler = async (req, res) => {
 
         const resizedImageBuffer = await sharp(req.file.buffer)
           .rotate()
-          .resize(800, null) 
+          .resize(800, null)
           .jpeg({ quality: 80 })
           .toBuffer()
 
+        // Asegurar la extensión del archivo como .jpg
         const uploadFolder = path.join(process.cwd(), 'uploads')
-        const fileName = Date.now() + path.extname(req.file.originalname)
-        const filePath = path.join(uploadFolder, fileName)
-        fs.writeFileSync(filePath, resizedImageBuffer) 
+        const fileName = `${Date.now()}.jpg`
+        const filePath = path.join(uploadFolder, fileName);
+        fs.writeFileSync(filePath, resizedImageBuffer); // Escribe la imagen en disco
 
         const fileDbPath = `/api/uploads/${fileName}`
 
