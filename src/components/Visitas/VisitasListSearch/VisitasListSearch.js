@@ -9,7 +9,7 @@ import { VisitaDetalles } from '@/components/Visitas'
 
 export function VisitasListSearch(props) {
 
-  const { reload, onReload, visitas, onToastSuccessMod, onToastSuccessVisitaDel } = props
+  const { user, reload, onReload, visitas, onToastSuccessMod, onToastSuccessDel } = props
 
   const [showDetalles, setShowDetalles] = useState(false)
   const [visitaSeleccionada, setVisitaSeleccionada] = useState(null)
@@ -68,12 +68,13 @@ export function VisitasListSearch(props) {
       <BasicModal title='detalles de la visita' show={showDetalles} onClose={onCloseDetalles}>
         {visitaSeleccionada && (
           <VisitaDetalles
+            user={user}
             reload={reload}
             onReload={onReload}
             visita={visitaSeleccionada}
             onCloseDetalles={onCloseDetalles}
             onToastSuccessMod={onToastSuccessMod}
-            onToastSuccessVisitaDel={onToastSuccessVisitaDel}
+            onToastSuccessDel={onToastSuccessDel}
           />
         )}
       </BasicModal>

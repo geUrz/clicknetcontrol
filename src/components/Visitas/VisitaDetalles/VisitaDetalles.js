@@ -27,7 +27,7 @@ export function VisitaDetalles(props) {
   const onOpenCloseTipoAcc = () => setShowTipoAcc((prevState) => !prevState)
   const onOpenCloseConfirmDel = () => setShowConfirmDel((prevState) => !prevState)
   const onToastSuccessDownloadQR = () => setShowDownQR((prevState) => !prevState)
-  
+
   const [showConfirmDelImg, setShowConfirmDelImg] = useState(false)
   const [imageToDelete, setImageToDelete] = useState(null)
   const [imgKeyToDelete, setImgKeyToDelete] = useState(null)
@@ -333,8 +333,8 @@ export function VisitaDetalles(props) {
             <div>
               <h1>Autorizó</h1>
               {visita.autorizo_usuario === undefined || visita.autorizo_nombre === null ?
-                <h2>Sin ingresar</h2> 
-                : 
+                <h2>Sin ingresar</h2>
+                :
                 <>
                   <h2>{visita.autorizo_usuario}</h2>
                   <h2>{visita.autorizo_nombre}</h2>
@@ -360,11 +360,11 @@ export function VisitaDetalles(props) {
           <h1>Código de acceso</h1>
           <h2>{visita.codigo}</h2>
           {visita.qrCode && (
-            <ImageSemantic src={visita.qrCode} />                      
+            <ImageSemantic src={visita.qrCode} />
           )}
         </div>
 
-        {user.isadmin === 'Admin' || visita.usuario_id === user.id ? (
+        {user && user.isadmin === 'Admin' || user && visita.usuario_id === user.id ? (
           <>
             <div className={styles.iconEdit}>
               <FaEdit onClick={onOpenEditVisita} />
@@ -379,11 +379,9 @@ export function VisitaDetalles(props) {
                   <FaShareAlt onClick={handleShare} />
                 </div>
               </div>
-              {user.isadmin === 'Admin' || visita.usuario_id === user.id ? (
-                <div className={styles.iconDel}>
-                  <FaTrash onClick={onOpenCloseConfirmDel} />
-                </div>
-              ) : null}
+              <div className={styles.iconDel}>
+                <FaTrash onClick={onOpenCloseConfirmDel} />
+              </div>
             </div>
           </>
         ) : null}

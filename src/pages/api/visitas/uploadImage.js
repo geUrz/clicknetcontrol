@@ -1,34 +1,25 @@
 import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
-import connection from '@/libs/db'; // Importa la conexión desde db.js
+import sharp from 'sharp';
+import connection from '@/libs/db';
 
 const uploadFolder = './public/uploads';
 
-// Crear el directorio si no existe
+// Crea la carpeta de subida si no existe
 if (!fs.existsSync(uploadFolder)) {
   fs.mkdirSync(uploadFolder, { recursive: true });
 }
 
-// Configuración de multer para guardar las imágenes en /public/uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadFolder); // La carpeta donde se guardarán las imágenes
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // Nombre único para evitar colisiones
-  },
-});
+const storage = multer.memoryStorage();
 
-// Configuración de multer con límite de tamaño de archivo
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // Límite de 5MB
 });
 
 export const config = {
   api: {
-    bodyParser: false, // Desactivar el body parser para manejar el archivo con multer
+    bodyParser: false,
   },
 };
 
@@ -46,29 +37,48 @@ const handler = async (req, res) => {
         return res.status(400).json({ error: 'No se ha subido ningún archivo' });
       }
 
-      const filePath = `/uploads/${req.file.filename}`;
-      const { id, imageKey } = req.body;
-
-      if (!id || !imageKey) {
-        return res.status(400).json({ error: 'ID de la visita o key de la imagen no proporcionados' });
-      }
-
       try {
+        // Procesa y redimensiona la imagen
+        const resizedImageBuffer = await sharp(req.file.buffer)
+          .rotate()
+          .resize(800, null) // Ancho máximo 800px; altura ajustada proporcionalmente
+          .jpeg({ quality: 80 }) // Forza salida como formato JPEG con calidad 80%
+          .toBuffer();
+
+        // Asegurar la extensión del archivo como .jpg
+        const uploadFolder = path.join(process.cwd(), 'uploads')
+        const fileName = `${Date.now()}.jpg`
+        const filePath = path.join(uploadFolder, fileName);
+        fs.writeFileSync(filePath, resizedImageBuffer); // Escribe la imagen en disco
+
+        // Crear la ruta relativa para almacenar en la base de datos
+        const fileDbPath = `/api/uploads/${fileName}`;
+
+        const { id, imageKey } = req.body;
+
+        if (!id || !imageKey) {
+          return res.status(400).json({ error: 'ID de la visita o key de la imagen no proporcionados' });
+        }
+
+        // Actualizar la base de datos con la ruta de la imagen
         const updateQuery = `
           UPDATE visitas
           SET ${imageKey} = ?
           WHERE id = ?;
         `;
-        const [result] = await connection.execute(updateQuery, [filePath, id]);
+        const [result] = await connection.execute(updateQuery, [fileDbPath, id]);
 
         if (result.affectedRows === 0) {
           return res.status(404).json({ error: 'Visita no encontrada' });
         }
 
-        return res.status(200).json({ filePath }); // Siempre responde al cliente
-      } catch (dbError) {
-        console.error('Error al actualizar la visita:', dbError);
-        return res.status(500).json({ error: 'Error al actualizar la visita', details: dbError.message });
+        return res
+          .setHeader('Cache-Control', 'no-cache')
+          .status(200)
+          .json({ filePath: fileDbPath });
+      } catch (sharpError) {
+        console.error('Error al redimensionar la imagen:', sharpError);
+        return res.status(500).json({ error: 'Error al procesar la imagen', details: sharpError.message });
       }
     });
   } else if (req.method === 'DELETE') {
@@ -93,11 +103,17 @@ const handler = async (req, res) => {
 
       const { filePath } = rows[0];
 
-      // Eliminar el archivo del sistema si existe
+      // Verificar si la ruta es válida y eliminar el archivo de la carpeta
       if (filePath) {
-        const fullPath = path.join(uploadFolder, path.basename(filePath));
+        const uploadFolder = path.join(process.cwd(), 'uploads') // Asegura la ruta consistente
+        const fullPath = path.join(uploadFolder, path.basename(filePath))
+
+
         if (fs.existsSync(fullPath)) {
           fs.unlinkSync(fullPath);
+          console.log(`Archivo ${fullPath} eliminado correctamente.`);
+        } else {
+          console.log(`No se encontró el archivo ${fullPath}`);
         }
       }
 

@@ -106,7 +106,7 @@ export default function Visitatecnica() {
 
         <VisitaTecnicaList reload={reload} onReload={onReload} visitatecnica={visitatecnica} onToastSuccessMod={onToastSuccessMod} onToastSuccessDel={onToastSuccessDel} />
 
-        {user.isadmin === 'Admin' ? (
+        {user && user.isadmin === 'Admin' ? (
           <Add onOpenClose={onOpenCloseForm} />
         ) : (
           ''

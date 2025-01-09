@@ -252,7 +252,7 @@ export function VisitaTecnicaDetalles(props) {
           <Tab panes={panes} className={styles.mainTab} />
         </div>
 
-        {user.isadmin === 'Admin' || user.isadmin === 'Técnico' ? (
+        {user && user.isadmin === 'Admin' || user && user.isadmin === 'Técnico' ? (
           <>
             <div className={styles.iconEdit}>
               <div>
@@ -260,7 +260,7 @@ export function VisitaTecnicaDetalles(props) {
               </div>
             </div>
 
-            {user.isadmin === 'Admin' ? (
+            {user && user.isadmin === 'Admin' ? (
               <div className={styles.iconDel}>
                 <div>
                   <FaTrash onClick={onOpenCloseConfirmDel} />

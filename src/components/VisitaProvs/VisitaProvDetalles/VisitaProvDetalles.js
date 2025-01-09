@@ -72,14 +72,14 @@ export function VisitaProvDetalles(props) {
           </div>
         </div>
 
-        {user.isadmin === 'Admin' || user.isadmin === 'Caseta' || user.isadmin === 'Comité' ? (
+        {user && user.isadmin === 'Admin' || user && user.isadmin === 'Caseta' || user && user.isadmin === 'Comité' ? (
           <>
 
             <div className={styles.iconEdit}>
               <FaEdit onClick={onOpenEditVisitaprov} />
             </div>
 
-            {user.isadmin === 'Admin' ? (
+            {user && user.isadmin === 'Admin' ? (
               <div className={styles.iconDel}>
                 <FaTrash onClick={onOpenCloseConfirmDel} />
               </div>

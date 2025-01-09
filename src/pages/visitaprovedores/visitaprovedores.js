@@ -106,7 +106,7 @@ export default function Visitaprovedores() {
 
         <VisitaProvsList reload={reload} onReload={onReload} visitaprovs={visitaprovs} onToastSuccessMod={onToastSuccessMod} onToastSuccessDel={onToastSuccessDel} />
 
-        {user.isadmin === 'Admin' || user.isadmin === 'Caseta' || user.isadmin === 'Comité' ? (
+        {user && user.isadmin === 'Admin' || user && user.isadmin === 'Caseta' || user && user.isadmin === 'Comité' ? (
           <Add onOpenClose={onOpenCloseForm} />
         ) : (
           ''

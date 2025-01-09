@@ -205,7 +205,7 @@ export function IncidenciaDetalles(props) {
           </div>
         </div>
 
-        {user.isadmin === 'Admin' || incidencia.usuario_id === user.id ? (
+        {user && user.isadmin === 'Admin' || user && incidencia.usuario_id === user.id ? (
           <>
             <div className={styles.iconEdit}>
               <div>
@@ -213,7 +213,7 @@ export function IncidenciaDetalles(props) {
               </div>
             </div>
 
-            {user.isadmin === 'Admin' ? (
+            {user && user.isadmin === 'Admin' ? (
               <div className={styles.iconDel}>
                 <div>
                   <FaTrash onClick={onOpenCloseConfirmDel} />

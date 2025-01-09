@@ -136,7 +136,7 @@ export default function Home() {
                   : null
                 }
 
-                {user && (user.isadmin === 'Admin') || user.isadmin === 'Técnico' ?
+                {user && (user.isadmin === 'Admin') || user && user.isadmin === 'Técnico' ?
                   <>
 
                     <Card link='/ordenesdeservicio' title='Órdenes Servicio'

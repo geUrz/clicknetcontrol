@@ -22,7 +22,7 @@ export function ModalImg(props) {
       ) : (
         <div className={styles.img}>
           <Image src={img} />
-          {delImage && user && (user.isadmin === 'Admin' || user.isadmin === 'Técnico' || user.isadmin === 'Caseta') ? (
+          {delImage && user && (user.isadmin === 'Admin' || user && user.isadmin === 'Técnico' || user.isadmin === 'Caseta') ? (
             <FaTrash onClick={() => onShowConfirmDelImg(imgKey)} />
           ) : null}
         </div>

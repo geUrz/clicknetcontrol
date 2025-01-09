@@ -54,9 +54,9 @@ export default async function handler(req, res) {
                     [searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, searchQuery]
                 )
 
-                if (rows.length === 0) {
+                /* if (rows.length === 0) {
                     return res.status(404).json({ message: 'No se encontraron visitas' })
-                }
+                } */
 
                 const visitas = await Promise.all(rows.map(async (visita) => {
                     const qrCode = await QRCode.toDataURL(visita.codigo)  // Genera el QR

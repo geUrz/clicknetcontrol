@@ -88,9 +88,9 @@ export default function Validarvisitas() {
           ''
         ) : (
           <div className={styles.searchMain}>
-            <SearchVisitas onResults={setResultados} reload={reload} onReload={onReload} onToastSuccessMod={onToastSuccessMod} onOpenCloseSearch={onOpenCloseSearch} />
+            <SearchVisitas user={user} onResults={setResultados} reload={reload} onReload={onReload} onToastSuccessMod={onToastSuccessMod} onOpenCloseSearch={onOpenCloseSearch} />
             {resultados.length > 0 && (
-              <VisitasListSearch visitas={resultados} reload={reload} onReload={onReload} />
+              <VisitasListSearch user={user} visitas={resultados} reload={reload} onReload={onReload} />
             )}
           </div>
         )}

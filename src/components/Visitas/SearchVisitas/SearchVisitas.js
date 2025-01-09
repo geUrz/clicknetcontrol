@@ -60,7 +60,7 @@ export function SearchVisitas(props) {
         {error && <p>{error}</p>}
         {visitas.length > 0 && (
           <div className={styles.resultsContainer}>
-            <VisitasListSearch visitas={visitas} reload={reload} onReload={onReload} onToastSuccessMod={onToastSuccessMod} onOpenCloseSearch={onOpenCloseSearch} />
+            <VisitasListSearch user={user} visitas={visitas} reload={reload} onReload={onReload} onToastSuccessMod={onToastSuccessMod} onOpenCloseSearch={onOpenCloseSearch} />
           </div>
         )}
       </div>
