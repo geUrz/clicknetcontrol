@@ -11,7 +11,7 @@ export function UploadImg(props) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const acceptedTypes = ['image/jpg', 'image/jpeg', 'image/png', 'image/webp'];
-  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+  const MAX_FILE_SIZE = 10 * 5000 * 5000; // 10 MB
   const MAX_WIDTH = 800; // Resolución máxima (ancho)
   const MAX_HEIGHT = 1778; // Resolución máxima (alto)
 
