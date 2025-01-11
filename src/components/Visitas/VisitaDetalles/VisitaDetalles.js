@@ -218,8 +218,8 @@ export function VisitaDetalles(props) {
         const width = qrCodeSize;
         const height = qrCodeSize + textHeight + additionalTextHeight
 
-        canvas.width = qrCodeSize / 2
-        canvas.height = (qrCodeSize / 2) + (textHeight / 2) + (additionalTextHeight / 2)
+        canvas.width = width
+        canvas.height = height
 
         // Fondo blanco
         ctx.fillStyle = 'white'

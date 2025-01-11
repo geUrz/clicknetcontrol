@@ -1,7 +1,7 @@
 import { IconClose, Confirm, FirmaDigital } from '@/components/Layouts'
 import { formatDate } from '@/helpers'
 import { BasicModal, ModalImg } from '@/layouts'
-import { FaCheck, FaEdit, FaPlus, FaTimes, FaTrash } from 'react-icons/fa'
+import { FaCheck, FaEdit, FaImage, FaPlus, FaTimes, FaTrash } from 'react-icons/fa'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Button, Form, FormField, FormGroup, Image, Label, Tab, TextArea } from 'semantic-ui-react'
@@ -30,8 +30,19 @@ export function OrdenServicioDetalles(props) {
   const [showConfirmFirmaTec, setShowConfirmFirmaTec] = useState(false)
   const [showConfirmFirmaCli, setShowConfirmFirmaCli] = useState(false)
 
-  const [toggle, setToggle] = useState(false)
-  const onToggle = () => setToggle((prevState) => !prevState) 
+  const [toggleEviOS, setToggleEviOS] = useState(() => {
+    const savedState = localStorage.getItem('toggleEviOS');
+    return savedState !== null ? JSON.parse(savedState) : false;
+  })
+
+  const onToggleEviOS = () => {
+    setToggleEviOS((prevState) => {
+      const newState = !prevState;
+
+      localStorage.setItem('toggleEviOS', JSON.stringify(newState));
+      return newState;
+    })
+  }
 
   const openImg = (imgUrl) => {
     setSelectedImg(imgUrl)
@@ -244,13 +255,27 @@ export function OrdenServicioDetalles(props) {
       render: () => (
         <Tab.Pane>
           <div className={styles.tabContent}>
-            {imageKeys1
-              .filter(imgKey => visitatecnica[imgKey]).map(imgKey => (
-                <div key={imgKey}>
-                  <Image src={visitatecnica[imgKey]} onClick={() => openImg(visitatecnica[imgKey], imgKey)} />
-                  <h1>{visitatecnica[`title${imageKeys1.indexOf(imgKey) + 1}`] || 'Sin título'}</h1>
-                </div>
-              ))}
+            {imageKeys1.map((imgKey, index) => (
+              <div key={imgKey}>
+                {visitatecnica && visitatecnica[imgKey] === null ? (
+                  <FaImage onClick={() => onShowSubirImg(imgKey)} />
+                ) : visitatecnica && visitatecnica[imgKey] ? (
+                  <>
+                    <Image src={visitatecnica[imgKey]} onClick={() => openImg(visitatecnica[imgKey], imgKey)} />
+                    <h1>{visitatecnica[`title${index + 1}`] || 'Sin título'}</h1>
+                    <div
+                      className={styles.editTitle}
+                      onClick={() =>
+                        handleEditTitle(visitatecnica[`title${index + 1}`], `title${index + 1}`)
+                      }
+                    >
+                      <FaEdit />
+                    </div>
+                  </>
+                ) : null}
+              </div>
+            ))}
+
           </div>
         </Tab.Pane>
       ),
@@ -260,18 +285,32 @@ export function OrdenServicioDetalles(props) {
       render: () => (
         <Tab.Pane>
           <div className={styles.tabContent}>
-            {imageKeys2
-              .filter(imgKey => visitatecnica[imgKey]).map(imgKey => (
-                <div key={imgKey}>
-                  <Image src={visitatecnica[imgKey]} onClick={() => openImg(visitatecnica[imgKey], imgKey)} />
-                  <h1>{visitatecnica[`title${imageKeys2.indexOf(imgKey) + 1}`] || 'Sin título'}</h1>
-                </div>
-              ))}
+            {imageKeys2.map((imgKey, index) => (
+              <div key={imgKey}>
+                {visitatecnica && visitatecnica[imgKey] === null ? (
+                  <FaImage onClick={() => onShowSubirImg(imgKey)} />
+                ) : visitatecnica && visitatecnica[imgKey] ? (
+                  <>
+                    <Image src={visitatecnica[imgKey]} onClick={() => openImg(visitatecnica[imgKey], imgKey)} />
+                    <h1>{visitatecnica[`title${index + 11}`] || 'Sin título'}</h1>
+                    <div
+                      className={styles.editTitle}
+                      onClick={() =>
+                        handleEditTitle(visitatecnica[`title${index + 11}`], `title${index + 11}`)
+                      }
+                    >
+                      <FaEdit />
+                    </div>
+                  </>
+                ) : null}
+              </div>
+            ))}
+
           </div>
         </Tab.Pane>
       ),
     },
-  ];
+  ]
 
 
   return (
@@ -304,7 +343,7 @@ export function OrdenServicioDetalles(props) {
               <h2>{formatDate(ordenservicio.date)}</h2>
             </div>
             <div>
-              <h1>Folio referencia</h1>
+              <h1>VT</h1>
               <h2>{
                 ordenservicio.folioref ?
                   ordenservicio.folioref : 'N/A'
@@ -318,16 +357,16 @@ export function OrdenServicioDetalles(props) {
           {ordenservicio.folioref != null && (
             <>
               <h1>Evidencias</h1>
-              {toggle ?
-              <div className={styles.toggleON}><BiSolidToggleRight onClick={onToggle} /></div> :
-              <div className={styles.toggleOFF}><BiSolidToggleLeft onClick={onToggle} /></div>
-          }
+              {toggleEviOS ?
+                <div className={styles.toggleON}><BiSolidToggleRight onClick={onToggleEviOS} /></div> :
+                <div className={styles.toggleOFF}><BiSolidToggleLeft onClick={onToggleEviOS} /></div>
+              }
             </>
           )}
         </div>
 
 
-        {toggle ?
+        {toggleEviOS ?
           <div className={styles.mainImg}>
             <Tab panes={panes} className={styles.mainTab} />
           </div> : null
@@ -389,7 +428,7 @@ export function OrdenServicioDetalles(props) {
           <div><FaTrash onClick={() => setShowConfirmDel(true)} /></div>
         </div>
 
-        <OrdenServicioPDF ordenservicio={ordenservicio} firmaTec={firmaTec} firmaCli={firmaCli} user={user} visitatecnica={visitatecnica} image={images} toggle={toggle} />
+        <OrdenServicioPDF ordenservicio={ordenservicio} firmaTec={firmaTec} firmaCli={firmaCli} user={user} visitatecnica={visitatecnica} image={images} toggle={toggleEviOS} />
 
       </div>
 
