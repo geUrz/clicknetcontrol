@@ -87,7 +87,7 @@ export function UsuarioDetalles(props) {
           </div>
         </div>
 
-        {user.isadmin === 'Admin' ? (
+        {user && user.isadmin === 'Admin' ? (
           <>
 
             <div className={styles.iconEdit}>

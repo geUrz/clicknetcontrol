@@ -1,13 +1,15 @@
-import { Confirm, IconClose } from '@/components/Layouts'
+import { Confirm, IconClose, ToastSuccess } from '@/components/Layouts'
 import { Button, Dropdown, Form, FormField, FormGroup, Input, Label, Message } from 'semantic-ui-react'
 import { formatCurrency, genRECId } from '@/helpers'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useAuth } from '@/contexts/AuthContext'
-import { FaCheck, FaTimes } from 'react-icons/fa'
+import { FaCheck, FaPlus, FaTimes } from 'react-icons/fa'
 import { RowHeadModal } from '../RowHead'
-import styles from './ReciboForm.module.css'
 import { BiSolidToggleLeft, BiSolidToggleRight } from 'react-icons/bi'
+import { ClienteForm } from '@/components/Clientes'
+import styles from './ReciboForm.module.css'
+import { BasicModal } from '@/layouts'
 
 export function ReciboForm(props) {
 
@@ -21,6 +23,21 @@ export function ReciboForm(props) {
 
   const onToggle = () => setToggle((prevState) => !prevState)
 
+  const [show, setShow] = useState(false)
+
+  const onOpenCloseClienteForm = () => setShow((prevState) => !prevState)
+
+  const [toastSuccessCliente, setToastSuccessCliente] = useState(false)
+
+  const onToastSuccessCliente = () => {
+    setToastSuccessCliente(true)
+    setTimeout(() => {
+      setToastSuccessCliente(false)
+    }, 3000)
+  }
+
+  const [clientes, setClientes] = useState([])
+  const [cliente_id, setCliente] = useState('')
   const [cotizacion, setCotizacion] = useState('')
   const [cotizaciones, setCotizaciones] = useState([])
   const [recibo, setRecibo] = useState('')
@@ -47,6 +64,10 @@ export function ReciboForm(props) {
 
   const validarForm = () => {
     const newErrors = {}
+
+    if (!cliente_id) {
+      newErrors.cliente_id = 'El campo es requerido'
+    }
 
     if (!recibo) {
       newErrors.recibo = 'El campo es requerido'
@@ -87,6 +108,19 @@ export function ReciboForm(props) {
 
   }
 
+  useEffect(() => {
+    const fetchClientes = async () => {
+      try {
+        const res = await axios.get('/api/clientes/clientes')
+        setClientes(res.data)
+      } catch (error) {
+        console.error('Error al obtener los clientes:', error)
+      }
+    }
+
+    fetchClientes()
+  }, [reload])
+
   const crearRecibo = async (e) => {
     e.preventDefault()
 
@@ -97,19 +131,23 @@ export function ReciboForm(props) {
     const folio = genRECId(4)
 
     try {
-      const response = await axios.post('/api/recibos/recibos', {
+      const res = await axios.post('/api/recibos/recibos', {
         usuario_id: user.id,
         folio,
-        recibo,
-        residencial_id: user.residencial_id
+        cliente_id,
+        recibo
       })
-      const reciboId = response.data.id
+      const reciboId = res.data.id
       await Promise.all(conceptos.map(concepto =>
-        axios.post('/api/recibos/conceptos', { recibo_id: reciboId, ...concepto })
+        axios.post('/api/recibos/conceptos', {
+          recibo_id: reciboId, ...concepto
+        })
       ))
+
       setRecibo('')
+      setCliente('')
       setConceptos([])
-      
+
       onReload()
       onOpenCloseForm()
       onToastSuccess()
@@ -130,22 +168,23 @@ export function ReciboForm(props) {
   const [conceptoAEliminar, setConceptoAEliminar] = useState(null)
 
   const eliminarConcepto = () => {
-    const nuevosConceptos = conceptos.filter((_, i) => i !== conceptoAEliminar);
-    setConceptos(nuevosConceptos);
-    onHideConfirm();
+    const nuevosConceptos = conceptos.filter((_, i) => i !== conceptoAEliminar)
+    setConceptos(nuevosConceptos)
+    onHideConfirm()
   }
 
   useEffect(() => {
     const fetchCotizaciones = async () => {
       try {
-        const response = await axios.get(`/api/cotizaciones/cotizaciones?residencial_id=${user.residencial_id}`);
-        setCotizaciones(response.data);
+        const res = await axios.get('/api/cotizaciones/cotizaciones')
+        setCotizaciones(res.data)
+
       } catch (error) {
-        console.error('Error al obtener las cotizaciones:', error);
+        console.error('Error al obtener las cotizaciones:', error)
       }
     };
-    fetchCotizaciones();
-  }, []);
+    fetchCotizaciones()
+  }, [])
 
   // Consultar los conceptos de la cotización seleccionada
   useEffect(() => {
@@ -155,18 +194,19 @@ export function ReciboForm(props) {
           const response = await axios.get(`/api/cotizaciones/conceptos?cotizacion_id=${cotizacion}`);
           setConceptos(response.data);
           // Aquí puedes mapear los conceptos y rellenar los campos, si es necesario
-          if (response.data.length > 0) {
-            setNuevoConcepto({
-              tipo: response.data[0].tipo,
-              concepto: response.data[0].concepto,
-              precio: response.data[0].precio,
-              cantidad: 1 // Default value or fetch from API
-            });
-          }
 
-          const cotizacionResponse = await axios.get(`/api/cotizaciones/cotizaciones?cotizacion_id=${cotizacion}`);
-          setRecibo(cotizacionResponse.data[0].cotizacion)
-          
+          setNuevoConcepto({
+            tipo: '',
+            concepto: '',
+            precio: '',
+            cantidad: ''
+          })
+
+          const cotizacionResponse = await axios.get(`/api/cotizaciones/cotizaciones?id=${cotizacion}`);
+          setRecibo(cotizacionResponse.data?.cotizacion || '')
+
+
+
         } catch (error) {
           console.error('Error al obtener los conceptos:', error);
         }
@@ -176,7 +216,7 @@ export function ReciboForm(props) {
   }, [cotizacion])
 
   const calcularTotales = () => {
-    const subtotal = conceptos.reduce((acc, curr) => acc + curr.cantidad * curr.precio, 0);
+    const subtotal = conceptos.reduce((acc, curr) => acc + curr.cantidad * curr.precio, 0)
     const iva = subtotal * 0.16;
     const total = subtotal + iva;
     return { subtotal, iva, total }
@@ -190,14 +230,14 @@ export function ReciboForm(props) {
       setToggleIVA(JSON.parse(savedToggleIVA))
     }
   }, [])
-  
+
   useEffect(() => {
     localStorage.setItem('ontoggleIVA', JSON.stringify(toggleIVA))
   }, [toggleIVA])
 
   const onIVA = () => {
     setToggleIVA(prevState => (!prevState))
-  } 
+  }
 
   const opcionesSerprod = [
     { key: 1, text: 'Servicio', value: 'Servicio' },
@@ -210,32 +250,34 @@ export function ReciboForm(props) {
 
       <IconClose onOpenClose={onOpenCloseForm} />
 
+      {toastSuccessCliente && <ToastSuccess contain='Cliente creado exitosamente' onClose={() => setToastSuccessCliente(false)} />}
+
       <div className={styles.main}>
         <Form>
           <FormGroup widths='equal'>
-          <FormField>
-              
+            <FormField>
+
               <div className={styles.toggleCot}>
-              {toggle ?
-                <div className={styles.toggleOn} onClick={onToggle}>
-                  <Label>Cotización</Label>
-                  <BiSolidToggleRight/>
-                </div> : 
-                <div className={styles.toggleOff} onClick={onToggle}>
-                  <Label>Cotización</Label>
-                  <BiSolidToggleLeft/>
-                </div>
-              }
+                {toggle ?
+                  <div className={styles.toggleOn} onClick={onToggle}>
+                    <Label>Cotización</Label>
+                    <BiSolidToggleRight />
+                  </div> :
+                  <div className={styles.toggleOff} onClick={onToggle}>
+                    <Label>Cotización</Label>
+                    <BiSolidToggleLeft />
+                  </div>
+                }
               </div>
 
               {toggle ?
                 <Dropdown
-                placeholder='Selecciona un folio'
-                fluid
-                selection
-                options={cotizaciones.map(cot => ({ key: cot.id, text: cot.folio, value: cot.id }))}
-                value={cotizacion}
-                onChange={(e, { value }) => setCotizacion(value)}
+                  placeholder='Selecciona un folio'
+                  fluid
+                  selection
+                  options={cotizaciones.map(cot => ({ key: cot.id, text: cot.folio, value: cot.id }))}
+                  value={cotizacion}
+                  onChange={(e, { value }) => setCotizacion(value)}
                 /> : null
               }
 
@@ -244,10 +286,30 @@ export function ReciboForm(props) {
               <Label>Recibo</Label>
               <Input
                 type="text"
-                value={recibo}
+                value={recibo || ''}
                 onChange={(e) => setRecibo(e.target.value)}
               />
               {errors.recibo && <Message negative>{errors.recibo}</Message>}
+            </FormField>
+            <FormField error={!!errors.cliente_id}>
+              <Label>Cliente</Label>
+              <Dropdown
+                placeholder='Selecciona un cliente'
+                fluid
+                selection
+                options={clientes.map(cliente => ({
+                  key: cliente.id,
+                  text: cliente.nombre,
+                  value: cliente.id
+                }))}
+                value={cliente_id}
+                onChange={(e, { value }) => setCliente(value)}
+              />
+              <div className={styles.addCliente} onClick={onOpenCloseClienteForm}>
+                <h1>Crear cliente</h1>
+                <FaPlus />
+              </div>
+              {errors.cliente_id && <Message negative>{errors.cliente_id}</Message>}
             </FormField>
           </FormGroup>
         </Form>
@@ -362,6 +424,10 @@ export function ReciboForm(props) {
         <Button primary onClick={crearRecibo}>Crear</Button>
 
       </div>
+
+      <BasicModal title='crear cliente' show={show} onClose={onOpenCloseClienteForm}>
+        <ClienteForm reload={reload} onReload={onReload} onOpenClose={onOpenCloseClienteForm} onToastSuccess={onToastSuccessCliente} />
+      </BasicModal>
 
       <Confirm
         open={showConfirm}

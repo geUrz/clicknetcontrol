@@ -1,8 +1,8 @@
 import { Confirm, IconClose, ToastSuccess } from '@/components/Layouts'
-import { FaCheck, FaEdit, FaInfoCircle, FaPlus, FaTimes, FaTrash } from 'react-icons/fa'
+import { FaCheck, FaEdit, FaPlus, FaTimes, FaTrash } from 'react-icons/fa'
 import { BasicModal } from '@/layouts'
 import { formatCurrency, formatDateIncDet } from '@/helpers'
-import { BiSolidToggleLeft, BiSolidToggleRight, BiToggleLeft, BiToggleRight } from 'react-icons/bi'
+import { BiSolidToggleLeft, BiSolidToggleRight } from 'react-icons/bi'
 import { useEffect, useState } from 'react'
 import { ReciboConceptos } from '../ReciboConceptos'
 import { ReciboPDF } from '../ReciboPDF'
@@ -33,11 +33,6 @@ export function ReciboDetalles(props) {
   useEffect(() => {
     setEditNota(!!(recibo && recibo.nota));
   }, [recibo?.nota])
-
-  /* const onOpenCloseConfirm = (concepto) => {
-    setShowConfirm((prevState) => !prevState)
-    setCurrentConcept(concepto.id)
-  } */
 
   const onOpenCloseConfirm = (concepto) => {
     if (!concepto || !concepto.id) {

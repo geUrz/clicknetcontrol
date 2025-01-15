@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { map, size } from 'lodash'
 import styles from './ReciboLista.module.css'
 import axios from 'axios'

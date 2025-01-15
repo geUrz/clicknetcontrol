@@ -92,7 +92,7 @@ export default function Usuarios() {
           ''
         )}
 
-        {user.isadmin === 'Admin' ? (
+        {user && user.isadmin === 'Admin' ? (
           <Add onOpenClose={onOpenCloseForm} />
         ) : (
           ''
