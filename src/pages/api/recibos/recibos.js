@@ -1,7 +1,7 @@
 import connection from "@/libs/db";
 
 export default async function handler(req, res) {
-    const { id, search } = req.query; // Se añade `id` para la búsqueda por ID
+    const { id, residencial_id, search } = req.query; // Se añade `id` para la búsqueda por ID
 
     if (req.method === 'GET') {
 
@@ -12,15 +12,45 @@ export default async function handler(req, res) {
                     id,
                     usuario_id,
                     folio,
-                    cliente_id,
                     recibo,
                     nota,
+                    residencial_id,
                     createdAt
                 FROM recibos 
-                WHERE id = ?
-                ORDER BY updatedAt DESC`, [id]);
+                WHERE recibos.id = ?
+                ORDER BY recibos.updatedAt DESC`, [id]);
 
                 res.status(200).json(rows[0]); // Devolver el evento con los datos del cliente
+
+            } catch (error) {
+                res.status(500).json({ error: error.message });
+            }
+            return;
+        }
+
+        if (residencial_id) {
+            try {
+                const [rows] = await connection.query(`
+                SELECT 
+                    recibos.id, 
+                    recibos.usuario_id, 
+                    recibos.folio, 
+                    recibos.recibo, 
+                    recibos.nota, 
+                    recibos.residencial_id, 
+                    residenciales.nombre AS residencial_nombre, 
+                    recibos.updatedAt,  
+                    recibos.createdAt
+                FROM 
+                    recibos
+                JOIN
+                    residenciales
+                ON
+                    recibos.residencial_id = residenciales.id
+                WHERE recibos.residencial_id = ?
+                ORDER BY recibos.updatedAt DESC`, [residencial_id]);
+
+                res.status(200).json(rows); // Devolver el evento con los datos del cliente
 
             } catch (error) {
                 res.status(500).json({ error: error.message });
@@ -36,27 +66,23 @@ export default async function handler(req, res) {
                         recibos.id, 
                         recibos.usuario_id, 
                         recibos.folio, 
-                        recibos.cliente_id, 
-                        clientes.nombre AS cliente_nombre,  
-                        clientes.contacto AS cliente_contacto, 
                         recibos.recibo,
-                        recibos.nota,  
+                        recibos.nota, 
+                        recibos.residencial_id, 
+                        residenciales.nombre AS residencial_nombre, 
+                        recibos.updatedAt,  
                         recibos.createdAt
                     FROM recibos
-                    JOIN clientes ON recibos.cliente_id = clientes.id
+                    JOIN residenciales ON recibos.residencial_id = residenciales.id
                     WHERE 
-                        LOWER(recibos.folio) LIKE ? 
-                    OR 
-                        LOWER(clientes.nombre) LIKE ?
-                    OR 
-                        LOWER(clientes.contacto) LIKE ?
+                        LOWER(recibos.folio) LIKE ?  
                     OR 
                         LOWER(recibos.recibo) LIKE ?
                     OR 
                         LOWER(recibos.nota) LIKE ?
                     OR 
                         LOWER(recibos.createdAt) LIKE ?  
-                    ORDER BY recibos.updatedAt DESC`, [searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, searchQuery]);
+                    ORDER BY recibos.updatedAt DESC`, [searchQuery, searchQuery, searchQuery, searchQuery]);
 
                 res.status(200).json(rows); // Devolver los recibos encontrados por búsqueda
 
@@ -69,17 +95,21 @@ export default async function handler(req, res) {
         try {
             const [rows] = await connection.query(`
                 SELECT 
-                  recibos.id, 
-                  recibos.usuario_id, 
-                  recibos.folio, 
-                  recibos.cliente_id,  
-                  clientes.nombre AS cliente_nombre, 
-                  clientes.contacto AS cliente_contacto, 
-                  recibos.recibo,
-                  recibos.nota,  
-                  recibos.createdAt
-                FROM recibos
-                JOIN clientes ON recibos.cliente_id = clientes.id
+                    recibos.id, 
+                    recibos.usuario_id, 
+                    recibos.folio, 
+                    recibos.recibo,
+                    recibos.nota, 
+                    recibos.residencial_id, 
+                    residenciales.nombre AS residencial_nombre, 
+                    recibos.updatedAt,  
+                    recibos.createdAt
+                FROM 
+                    recibos
+                JOIN
+                    residenciales
+                ON
+                    recibos.residencial_id = residenciales.id
                 ORDER BY recibos.updatedAt DESC`);
 
             res.status(200).json(rows); // Devolver todos los recibos con los datos de los clientes
@@ -89,12 +119,12 @@ export default async function handler(req, res) {
         }
     } else if (req.method === 'POST') {
         // Maneja la solicitud POST
-        const { usuario_id, folio, cliente_id, recibo, nota } = req.body;
+        const { usuario_id, folio, recibo, residencial_id } = req.body;
 
         try {
             const [result] = await connection.query(
-                'INSERT INTO recibos (usuario_id, folio, cliente_id, recibo, nota) VALUES (?, ?, ?, ?, ?)',
-                [usuario_id, folio, cliente_id, recibo, nota]
+                'INSERT INTO recibos (usuario_id, folio, recibo, residencial_id) VALUES (?, ?, ?, ?)',
+                [usuario_id, folio, recibo, residencial_id]
             );
             res.status(201).json({ id: result.insertId });
         } catch (error) {
@@ -112,8 +142,8 @@ export default async function handler(req, res) {
         if (recibo) {
             try {
                 const [result] = await connection.query(
-                    'UPDATE recibos SET cliente_id = ?, recibo = ? WHERE id = ?',
-                    [cliente_id, recibo, id]
+                    'UPDATE recibos SET recibo = ? WHERE id = ?',
+                    [recibo, id]
                 );
 
                 if (result.affectedRows === 0) {
