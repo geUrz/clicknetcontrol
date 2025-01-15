@@ -57,6 +57,7 @@ export function ReciboDetalles(props) {
   const handleDeleteConcept = () => {
     onDeleteConcept(currentConcept)
     setShowConfirm(false)
+    setShowEditConcept(false)
   }
 
   const [toggleIVA, setToggleIVA] = useState(false)
@@ -293,7 +294,8 @@ export function ReciboDetalles(props) {
           </div>
         }
         onConfirm={handleDeleteConcept}
-        onCancel={onOpenCloseConfirm}
+        onCancel={() => setShowConfirm(false)}
+        onClick={() => onOpenCloseConfirm}
         content='¿ Estas seguro de eliminar el concepto ?'
       />
 

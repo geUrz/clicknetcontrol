@@ -126,7 +126,7 @@ export function CotizacionConceptosEditForm(props) {
         </Button>
 
         <div className={styles.iconDel}>
-          <div><FaTrash onClick={onOpenCloseConfirm} /></div>
+          <div><FaTrash onClick={() => onOpenCloseConfirm(newConcept)} /></div>
         </div>
       </div>
     </>
